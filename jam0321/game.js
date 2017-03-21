@@ -26,7 +26,7 @@ const pick = [
 ];
 const main = _ => {
     ctx.clearRect(0, 0, 800, 600);
-    if(end === 2000) {
+    if(end >= 2000 && end < 2020) {
         ctx.clearRect(0, 0, 800, 600);
         pick.push("");
         pick.push("your score:" + localStorage.getItem('count'));
@@ -39,13 +39,13 @@ const main = _ => {
             end = 1;
             input.space = false;
             makeWindow(Math.random() * 1000, Math.random() * 600);
-            //localStorage.setItem('count', parseInt(localStorage.getItem('count')));
+            localStorage.setItem('count', parseInt(localStorage.getItem('count')));
         }
     } else if(end === 2020) {
         let result = "とにかくキーを叩くだけのゲーム。 Score:" + localStorage.getItem('count') + " https://hukuda222.github.io/gamejam/jam0321/ ";
         location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(result) + "&hashtags=traP3jam";
     }
-    if(end > 0 && end < 3000) end++;
+    if(end > 0 && end < 2020) end++;
 };
 const init = _ => {
     let canvas = document.getElementById("cv");

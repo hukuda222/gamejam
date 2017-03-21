@@ -21,7 +21,7 @@ const main = _ => {
         window.open('', '_self')
             .close();
     } else {
-        //life--;
+        life--;
         if(life <= 0) window.open('', '_self')
             .close();
     }
