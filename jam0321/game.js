@@ -42,7 +42,7 @@ const main = _ => {
             localStorage.setItem('count', parseInt(localStorage.getItem('count')) + 1);
         }
     } else if(end > 6020) {
-        let result = "Score:" + localStorage.getItem('count');
+        let result = "Score:" + localStorage.getItem('count') + " https://hukuda222.github.io/gamejam/jam0321/ ";
         location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(result) + "&hashtags=traP3jam";
     }
     if(end > 0) end++;
