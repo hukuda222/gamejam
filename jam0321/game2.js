@@ -22,8 +22,10 @@ const main2 = _ => {
             .close();
     } else {
         life--;
-        if(life <= 0) window.open('', '_self')
-            .close();
+        if(life <= 0 || localStorage.getItem('end') >= 2000) {
+            window.open('', '_self')
+                .close();
+        }
     }
 };
 const init = () => {
@@ -45,7 +47,6 @@ const makeWindow = (left, top) => {
     window.open('window.html', null, 'width=400, height=300,left=' + left + ',top=' + top + ' menubar=no, toolbar=no,resizable=no ,scrollbars=no');
 };
 const KeyDown = (e) => { //キーが押されたらInputInfoに格納 ({}つけないと正常に動かなかった)
-    console.log(e.keyCode);
     if(e.keyCode >= 65 && e.keyCode <= 90) input = e.keyCode;
 };
 const KeyUp = (e) => { //キーが離されたら、InputInfoから除去

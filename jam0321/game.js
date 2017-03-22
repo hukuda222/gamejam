@@ -25,7 +25,7 @@ const pick = [
 "    So as I pray, UNLIMITED BLADE WORKS. "
 ];
 const main = _ => {
-    ctx.clearRect(0, 0, 800, 800);
+    ctx.clearRect(0, 0, 800, 700);
     if(window.end >= 2000) {
         pick[19] = "your score:" + localStorage.getItem('count');
         pick[20] = "Press space to tweet";

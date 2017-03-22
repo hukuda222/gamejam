@@ -8,15 +8,17 @@
 </head>
 
 <body onload="init()" bgcolor="#000000" text="#FFFFFF">
-    <canvas id="cv" width="800" height="800">
+    <canvas id="cv" width="800" height="700">
 </canvas>
     <script>
         "use strict";
         localStorage.setItem('count', parseInt(0));
+        localStorage.setItem('end', parseInt(0));
         const set = _=>{
           setTimeout(_=>{
                 main();
                 set();
+                localStorage.setItem('end',end);
            }, 1000 / 60);
          };
          set();
