@@ -3,8 +3,8 @@ let life = 100;
 let ngCode = new Array(9);
 let goodCode = new Array(9);
 let input = -1;
-const main = _ => {
-    ctx.clearRect(0, 0, 800, 600);
+const main2 = _ => {
+    ctx.clearRect(0, 0, 200, 150);
     ctx.fillText("ngcode:", 0, 20);
     for(let i = 0; i < 6; i++) {
         ctx.fillText(String.fromCharCode(parseInt(ngCode[i])), 50, 20 + (i + 1) * 30);
@@ -17,6 +17,7 @@ const main = _ => {
             if(input === ngCode[i]) point = -15;
             else if(input === goodCode[i]) point += 10;
         }
+        life = 0;
         localStorage.setItem('count', parseInt(localStorage.getItem('count')) + point);
         window.open('', '_self')
             .close();

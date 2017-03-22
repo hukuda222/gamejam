@@ -13,7 +13,13 @@
     <script>
         "use strict";
         localStorage.setItem('count', parseInt(0));
-        setInterval(main, 1000 / 60);
+        const set = _=>{
+          setTimeout(_=>{
+                main();
+                set();
+           }, 1000 / 60);
+         };
+         set();
     </script>
 </body>
 

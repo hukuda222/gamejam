@@ -1,7 +1,7 @@
 let ctx;
-let end = 0;
 const input = {
-    space: false
+    space: false,
+    other: -1
 };
 const pick = [
   "init(s,t)",
@@ -26,26 +26,35 @@ const pick = [
 ];
 const main = _ => {
     ctx.clearRect(0, 0, 800, 600);
-    if(end >= 2000 && end < 2020) {
-        ctx.clearRect(0, 0, 800, 600);
-        pick.push("");
+    if(window.end >= 2000) {
         pick.push("your score:" + localStorage.getItem('count'));
-    } else if(end < 2000) {
-        ctx.fillText("Press space to start", 0, 20);
-        for(let i = 0; i < pick.length && i * 100 < end; i += 1) {
-            ctx.fillText(pick[i].substr(0, end - i * 100), 0, 50 + i * 30);
+        pick.push("Press space to tweet");
+        for(let i = 0; i < pick.length && i * 100 < window.end; i += 1) {
+            ctx.fillText(pick[i].substr(0, window.end - i * 100), 0, 50 + i * 30);
         }
         if(input.space) {
-            end = 1;
+            let result = "とにかくキーを叩くだけのゲーム。 Score:" + localStorage.getItem('count') + " https://hukuda222.github.io/gamejam/jam0321/ ";
+            location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(result) + "&hashtags=traP3jam";
+        }
+    } else if(window.end < 2000) {
+        ctx.fillText("Press space to start", 0, 20);
+        for(let i = 0; i < pick.length && i * 100 < window.end; i += 1) {
+            ctx.fillText(pick[i].substr(0, window.end - i * 100), 0, 50 + i * 30);
+        }
+        if(input.space) {
+            //  if(window.end === 0) {
+            window.end = 1;
             input.space = false;
             makeWindow(Math.random() * 1000, Math.random() * 600);
-            localStorage.setItem('count', parseInt(localStorage.getItem('count')));
+            //}
+        } else if(input.other > 0) {
+            input.other = -1;
+            makeWindow(Math.random() * 1000, Math.random() * 600);
         }
-    } else if(end === 2020) {
-        let result = "とにかくキーを叩くだけのゲーム。 Score:" + localStorage.getItem('count') + " https://hukuda222.github.io/gamejam/jam0321/ ";
-        location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(result) + "&hashtags=traP3jam";
     }
-    if(end > 0 && end < 2020) end++;
+    if(window.end > 0 && window.end < 2000) {
+        window.end++;
+    }
 };
 const init = _ => {
     let canvas = document.getElementById("cv");
@@ -54,6 +63,7 @@ const init = _ => {
     ctx.shadowBlur = 5;
     ctx.shadowColor = "#88DD88";
     ctx.fillStyle = "#44FF44";
+    window.end = 0;
 };
 const makeWindow = (left, top) => {
     window.open('window.html', null, 'width=400, height=300,left=' + left + ',top=' + top + ' menubar=no, toolbar=no,resizable=no ,scrollbars=no');
@@ -61,6 +71,15 @@ const makeWindow = (left, top) => {
 const KeyDown = (e) => { //キーが押されたらInputInfoに格納 ({}つけないと正常に動かなかった)
     if(e.key == " ") {
         input.space = true;
+    } else if(e.keyCode >= 33 && e.keyCode <= 33 + 126) {
+        input.other = e.keyCode;
     }
 };
+const KeyUp = (e) => { //キーが離されたら、InputInfoから除去
+    if(input.other === e.keyCode) input.other = -1;
+    else if(e.key == " ") {
+        input.space = false;
+    }
+};
+document.addEventListener("keyup", KeyUp);;
 document.addEventListener("keydown", KeyDown);
