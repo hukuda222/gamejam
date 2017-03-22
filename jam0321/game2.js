@@ -10,7 +10,6 @@ const main2 = _ => {
         ctx.fillText(String.fromCharCode(parseInt(ngCode[i])), 50, 20 + (i + 1) * 30);
     }
     if(input !== -1) {
-        input.w = false;
         makeWindow(Math.random() * 1000, Math.random() * 600);
         let point = 5;
         for(let i = 0; i < 6; i++) {
@@ -35,18 +34,19 @@ const init = () => {
     ctx.shadowColor = "#88DD88";
     ctx.fillStyle = "#44FF44";
     for(let i = 0; i < 4; i++) {
-        goodCode[i] = 33 + 20 * i + Math.floor(Math.random() * 20);
+        goodCode[i] = 65 + 6 * i + Math.floor(Math.random() * 6);
     }
     for(let i = 0; i < 4; i++) {
-        let kari = Math.floor(Math.random() * 20);
-        ngCode[i] = goodCode[i] === kari ? 33 + 20 * i + (kari + 1) % 20 : 33 + 20 * i + kari;
+        let kari = Math.floor(Math.random() * 6);
+        ngCode[i] = goodCode[i] === kari ? 65 + 6 * i + (kari + 1) % 6 : 65 + 6 * i + kari;
     }
 };
 const makeWindow = (left, top) => {
     window.open('window.html', null, 'width=400, height=300,left=' + left + ',top=' + top + ' menubar=no, toolbar=no,resizable=no ,scrollbars=no');
 };
 const KeyDown = (e) => { //キーが押されたらInputInfoに格納 ({}つけないと正常に動かなかった)
-    if(e.keyCode >= 33 && e.keyCode <= 33 + 126) input = e.keyCode;
+    console.log(e.keyCode);
+    if(e.keyCode >= 65 && e.keyCode <= 90) input = e.keyCode;
 };
 const KeyUp = (e) => { //キーが離されたら、InputInfoから除去
     if(input === e.keyCode) input = -1;

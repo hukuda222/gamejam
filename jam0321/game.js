@@ -25,12 +25,12 @@ const pick = [
 "    So as I pray, UNLIMITED BLADE WORKS. "
 ];
 const main = _ => {
-    ctx.clearRect(0, 0, 800, 600);
+    ctx.clearRect(0, 0, 800, 800);
     if(window.end >= 2000) {
-        pick.push("your score:" + localStorage.getItem('count'));
-        pick.push("Press space to tweet");
-        for(let i = 0; i < pick.length && i * 100 < window.end; i += 1) {
-            ctx.fillText(pick[i].substr(0, window.end - i * 100), 0, 50 + i * 30);
+        pick[19] = "your score:" + localStorage.getItem('count');
+        pick[20] = "Press space to tweet";
+        for(let i = 0; i < pick.length; i += 1) {
+            ctx.fillText(pick[i], 0, 50 + i * 30);
         }
         if(input.space) {
             let result = "とにかくキーを叩くだけのゲーム。 Score:" + localStorage.getItem('count') + " https://hukuda222.github.io/gamejam/jam0321/ ";
@@ -41,18 +41,16 @@ const main = _ => {
         for(let i = 0; i < pick.length && i * 100 < window.end; i += 1) {
             ctx.fillText(pick[i].substr(0, window.end - i * 100), 0, 50 + i * 30);
         }
-        if(input.space) {
-            //  if(window.end === 0) {
+        if(input.space && window.end <= 0) {
             window.end = 1;
             input.space = false;
             makeWindow(Math.random() * 1000, Math.random() * 600);
-            //}
-        } else if(input.other > 0) {
+        } else if(input.other > 0 && window.end > 0) {
             input.other = -1;
             makeWindow(Math.random() * 1000, Math.random() * 600);
         }
     }
-    if(window.end > 0 && window.end < 2000) {
+    if(window.end > 0) {
         window.end++;
     }
 };
@@ -69,9 +67,10 @@ const makeWindow = (left, top) => {
     window.open('window.html', null, 'width=400, height=300,left=' + left + ',top=' + top + ' menubar=no, toolbar=no,resizable=no ,scrollbars=no');
 };
 const KeyDown = (e) => { //キーが押されたらInputInfoに格納 ({}つけないと正常に動かなかった)
+    console.log(e.keyCode);
     if(e.key == " ") {
         input.space = true;
-    } else if(e.keyCode >= 33 && e.keyCode <= 33 + 126) {
+    } else if(e.keyCode >= 65 && e.keyCode <= 90) {
         input.other = e.keyCode;
     }
 };
