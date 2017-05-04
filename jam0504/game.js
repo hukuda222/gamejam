@@ -167,8 +167,8 @@ const main = _ => {
             }
             if(input.left)player.x-=8;
             else if(input.right)player.x+=8;
-            if(player.x < 50)player.x = 50
-            else if(player.x > 750)player.x = 750
+            if(player.x < 0)player.x = 0
+            else if(player.x > 700)player.x = 700
             ctx.drawImage(images.player,player.x,100,100,100);
             break;
         case state.Result:
