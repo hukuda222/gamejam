@@ -48,7 +48,7 @@ class Money {
     get reset(){
         this.pos.x = 25+Math.random()*500;
         this.pos.y = 600;
-        this.value = Math.ceil(Math.random()*Math.floor(10+player.score/10))*10;
+        this.value = Math.ceil(Math.random()*Math.floor(10+player.score))*10;
         this.exist = true;
     }
     get empty(){
