@@ -127,6 +127,8 @@ const main = _ => {
             ctx.fillText("お金：増えるほど嬉しいが、重くなるので加速度が増える",150,250);
             ctx.fillText("クレジットカード：お金を預けて、加速度を0にリセットできる",150,300);
             ctx.fillText("とげ：刺さると痛い",150,350);
+            ctx.font = "30px 'Verdana'";
+            ctx.fillText("Enterで始まるよ",150,400);
             if(input.enter){
                 nowState = state.Play;
                 moneys[0].reset;
