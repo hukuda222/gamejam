@@ -167,6 +167,7 @@ def loop():
         if Key["Enter"]:
             window.open("https://twitter.com/intent/tweet?text=" +"吸った血は" + str(ka.blood)+ "ml https://hukuda222.github.io/gamejam/jam0818/" + "&hashtags=traP3jam",'_blank')
             ka.reset((300,100))
+            Key["Enter"]=False
             for i,e in enumerate(enemys):
                 del enemys[i]
     timer.set_timeout(loop,1000/60)
