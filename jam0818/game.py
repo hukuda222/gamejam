@@ -156,9 +156,10 @@ def loop():
             ctx.fillRect(0,0,canvas.width,canvas.height)
             Text.write("score",(100,100),"Dead...")
         Text.write("score",(400,50),"吸ったのは"+str(ka.blood)+"ml")
-        Text.write("score",(100,300),"press Enter to tweet()")
-        #if Key["Enter"]:
-        #      doc.location.href = "https://twitter.com/intent/tweet?text=" + "a" + "&hashtags=traP3jam";
+        Text.write("score",(100,300),"press Enter to tweet")
+        if Key["Enter"]:
+            window.location.assign("https://twitter.com/intent/tweet?text=" +"吸った血は" + str(ka.blood)+ "ml https://hukuda222.github.io/gamejam/jam0818/" + "&hashtags=traP3jam");
+
 
     timer.set_timeout(loop,1000/60)
 loop()
