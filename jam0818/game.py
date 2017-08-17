@@ -119,7 +119,8 @@ ka = Ka((300,100))
 enemys = list()
 
 def timeover():
-    ka.time = True
+    if ka.live:
+        ka.time = True
 
 def loop():
     ctx.fillStyle="#FFFFF0"
