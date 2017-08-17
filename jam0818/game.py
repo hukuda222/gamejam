@@ -134,7 +134,7 @@ def loop():
 
     elif ka.live and ka.time==False:
         ctx.fillRect(0,0,canvas.width,canvas.height)
-        Text.write("score",(600,50),"吸ったのは"+ka.blood+"ml")
+        Text.write("score",(400,50),"吸ったのは"+str(ka.blood)+"ml")
         if random.randint(0,100)>90 and len(enemys) < 10:
             enemys.append(Teki())
         ka.move()
@@ -154,8 +154,8 @@ def loop():
             ctx.fillStyle="#FF0000"
             ctx.fillRect(0,0,canvas.width,canvas.height)
             Text.write("score",(100,100),"Dead...")
-        Text.write("score",(600,50),"吸ったのは"+ka.blood+"ml")
-        Text.write("score",(100,300),"press Enter to tweet(実装できず)")
+        Text.write("score",(400,50),"吸ったのは"+str(ka.blood)+"ml")
+        Text.write("score",(100,300),"press Enter to tweet()")
         #if Key["Enter"]:
         #      doc.location.href = "https://twitter.com/intent/tweet?text=" + "a" + "&hashtags=traP3jam";
 
