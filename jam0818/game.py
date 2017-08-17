@@ -48,6 +48,13 @@ class Ka:
     def drawpos(self):
         return (self.pos[0]-20,self.pos[1]-80)
 
+    def reset(self,pos):
+        self.pos=[pos[0],pos[1]]
+        self.live=True
+        self.blood=0
+        self.title=True
+        self.time=False
+
     def draw(self):
         Image.draw("ka",self.drawpos())
 
@@ -158,9 +165,10 @@ def loop():
         Text.write("score",(400,50),"吸ったのは"+str(ka.blood)+"ml")
         Text.write("score",(100,300),"press Enter to tweet")
         if Key["Enter"]:
-            window.location.assign("https://twitter.com/intent/tweet?text=" +"吸った血は" + str(ka.blood)+ "ml https://hukuda222.github.io/gamejam/jam0818/" + "&hashtags=traP3jam");
-
-
+            window.open("https://twitter.com/intent/tweet?text=" +"吸った血は" + str(ka.blood)+ "ml https://hukuda222.github.io/gamejam/jam0818/" + "&hashtags=traP3jam",'_blank')
+            ka.reset((300,100))
+            for i,e in enumerate(enemys):
+                del enemys[i]
     timer.set_timeout(loop,1000/60)
 loop()
 timer.set_timeout(timeover,1000*60)
