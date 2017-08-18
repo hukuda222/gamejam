@@ -172,4 +172,4 @@ def loop():
             Key["Space"]=False
     timer.set_timeout(loop,1000/60)
 loop()
-timer.set_timeout(timeover,1000*60)
+timer.set_timeout(timeover,1000*30)
