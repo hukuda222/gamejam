@@ -109,7 +109,7 @@ class Teki:
             if self.type == "walk":
                 self.pos[0] += 3*self.dir
             if self.type == "hunter":
-                if self.turn>100 and random.randint(0,100)>60:
+                if self.turn>100 and random.randint(0,100)>97:
                     self.dir *= -1
                     self.turn=0
                 self.pos[0] += 1*self.dir
