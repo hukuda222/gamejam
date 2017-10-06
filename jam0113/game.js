@@ -80,7 +80,7 @@ function init() {
      clk[1] = document.getElementById("clk2");
     $("<img id='clk3' src='clk3.png' >").appendTo("canvas");
      clk[2] = document.getElementById("clk3");
-    
+
     $("<img id='boom1' src='boom1.png' >").appendTo("canvas");
      boom[0] = document.getElementById("boom1");
     $("<img id='boom2' src='boom15.png' >").appendTo("canvas");
@@ -126,7 +126,7 @@ function makeBlock(id, x, y) {
         if (Math.abs(pl.pos.x - this.pos.x) < 30 &&
             this.pos.y - pl.pos.y < 40 && this.pos.y - pl.pos.y > 20 && pl.state !== s.stand) {
             pl.col("block", this.id);
-        } 
+        }
         if (this.pos.y > 620) {
             this.pos.y=-114514;
             blocknum.push(this.id);
@@ -176,7 +176,7 @@ function makePlayer() {
         if(this.pos.y>620 || (this.state==s.stand&&this.ride.pos.y>610)) {
             now=Scene.boom;
         }
-        
+
         if(this.state==s.air && this.speed <0){ctx.drawImage(clk[2],this.pos.x - 20, this.pos.y - 20,40,40);}
         else if(this.state==s.air && this.speed >=0){ctx.drawImage(clk[1],this.pos.x - 20, this.pos.y - 20,40,40);}
         else{ctx.drawImage(clk[0],this.pos.x - 20, this.pos.y - 20,40,40);}
@@ -192,7 +192,7 @@ function makePlayer() {
 }
 
 function blockAdd(p) {
-     let newid = blocknum.pop(); 
+     let newid = blocknum.pop();
     console.log(p);
    // if(Math.random()>0.2){
     if(p==80)blocks[newid] = new makeBlock(newid, Math.random() * 150 + 30, -20);
@@ -211,9 +211,10 @@ document.addEventListener("keyup", KeyUp);
 
 let main = function loop() {
     //背景をクリア
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "#CC3333";
     if (now == Scene.play) {
         ctx.clearRect(0, 0, 800, 600);
+        ctx.fillRect(0,0,800,600)
         count++;
         blocks.forEach(function (obj) {
             if(obj)obj.move();
@@ -234,6 +235,6 @@ let main = function loop() {
     else{
          ctx.clearRect(0, 0, 800, 600);
         ctx.fillText("ゲームオーバー", 510, 320);
-        ctx.fillText("スコアは、"+count+"です", 510, 360);        
+        ctx.fillText("スコアは、"+count+"です", 510, 360);
     }
 }　　　
