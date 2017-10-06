@@ -68,7 +68,20 @@ let clk=[];
 let boom=[];
 let count = 0;
 
+const s = {
+    stand: 0,
+    air: 1
+}
+
+const Scene = {
+    play: 0,
+    boom:1,
+    end: 2,
+    title:3
+}
+let now = Scene.title;
 function init() {
+    now = Scene.title;
     let canvas = document.getElementById("cv");
     ctx = canvas.getContext("2d");
     ctx.font = "30px 'Times New Roman'"
@@ -94,21 +107,11 @@ function init() {
 }
 
 
-const s = {
-    stand: 0,
-    air: 1
-}
-
-const Scene = {
-    play: 0,
-    boom:1,
-    end: 2
-}
-let now = Scene.play;
 const gravity = 0.7;
 let blocks = [];
 let blocknum = [];
 let bcount=0;
+let readyPlay=false;
 for (let i = 1; i <= 20; i++) {
     blocknum.push(i);
 }
@@ -211,10 +214,23 @@ document.addEventListener("keyup", KeyUp);
 
 let main = function loop() {
     //背景をクリア
-    ctx.fillStyle = "#CC3333";
-    if (now == Scene.play) {
+    if(now == Scene.title){
         ctx.clearRect(0, 0, 800, 600);
-        ctx.fillRect(0,0,800,600)
+        ctx.fillStyle = "#FFBBBB";
+        ctx.fillRect(0,0,800,600);
+        ctx.fillStyle = "#000000";
+        ctx.fillText("CLKジャンプ",100,100);
+        if(input.space)readyPlay=true;
+        else if(!input.space && readyPlay){
+          now=Scene.play;
+          readyPlay=false;
+        }
+    }
+    else if (now == Scene.play) {
+        ctx.clearRect(0, 0, 800, 600);
+        ctx.fillStyle = "#FFBBBB";
+        ctx.fillRect(0,0,800,600);
+        ctx.fillStyle = "#000000";
         count++;
         blocks.forEach(function (obj) {
             if(obj)obj.move();
@@ -233,8 +249,10 @@ let main = function loop() {
         else {now=Scene.end;bcount=0;}
     }
     else{
-         ctx.clearRect(0, 0, 800, 600);
+        ctx.clearRect(0, 0, 800, 600);
         ctx.fillText("ゲームオーバー", 510, 320);
         ctx.fillText("スコアは、"+count+"です", 510, 360);
+        ctx.fillText("再プレイはリロードしてね。", 510, 400);
+        if(input.space)readyPlay=true;
     }
 }　　　
