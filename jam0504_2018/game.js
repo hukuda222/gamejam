@@ -1,6 +1,5 @@
 let ctx;
 let nowState;
-let endMes;
 const images = {
   ossan: 0,
   neko: 1,
@@ -148,3 +147,4 @@ document.addEventListener("keyup", KeyUp);
 document.addEventListener("keydown", KeyDown);
 document.addEventListener("mousedown", MouseDown);
 document.addEventListener("mouseup", MouseUp);
+document.addEventListener("DOMContentLoaded", init);
