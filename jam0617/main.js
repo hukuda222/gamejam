@@ -75,7 +75,7 @@ phina.define("Result", {
   },
   update: function(app) {
     if (app.keyboard.getKey("T")) {
-      let result = "甲子園の決勝戦は" + this.score + "対28 でした！" + " https://hukuda222.github.io/gamejam/jam0617/ ";
+      let result = "甲子園の決勝戦は" + this.score + "対27 でした！" + " https://hukuda222.github.io/gamejam/jam0617/ ";
       location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(result) + "&hashtags=traP3jam";
     } else if (app.keyboard.getKey("enter")) {
       this.exit();
