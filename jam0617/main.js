@@ -150,6 +150,7 @@ phina.define("Main", {
     this.ball.y = 200;
     this.ball.height = 10;
     this.ball.width = 10;
+    this.ball.wait(1000);
     // this.ball.tweener.to({x: 300, y: 600, width: 50, height: 50}, 4000, "swing").play();
     // this.ball.tweener.to({x: 250, y: 250, width: 25, height: 25}, 500)
     // .to({x: 300, y: 600, width: 50, height: 50}, 800).play().wait(1000).call((_) => {
