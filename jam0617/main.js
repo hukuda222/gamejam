@@ -41,7 +41,7 @@ phina.define("Title", {
     this.superInit();
     this.backgroundColor = "skyblue";
     const label = Label({
-      text: "順番をまわすゲーム\nEnterで打つよ\n\nEnter to start",
+      text: "順番をまわすゲーム\n上下左右キーで移動して、Enterで打つよ\n\nEnter to start",
       fontSize: 40,
       fill: "white"
     }).addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(4));
