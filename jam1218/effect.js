@@ -4,8 +4,8 @@ const dame = (stage, d) => {
   damage.y = stage.height / 2;
   createjs.Tween.get(count).to({
     scaleX: 2,
-    scaleY: 2,
-  }, 100, createjs.Ease.cubicInOut).call(_ => {
+    scaleY: 2
+  }, 100, createjs.Ease.cubicInOut).call((_) => {
     stage.removeChild(damage);
   });
   stage.addChild(damage);
