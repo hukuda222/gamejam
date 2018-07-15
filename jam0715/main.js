@@ -100,31 +100,31 @@ phina.define("Main", {
     // 袋
     this.floor = RectangleShape({
       width: 150,
-      height: 2
+      height: 5
     }).addChildTo(this);
     this.floor.setPosition(300, 400);
     this.floorb = this.layer.createBody({
-      type: "static",
+      type: "kinematic",
       shape: "box"
     }).attachTo(this.floor);
     this.floorb.friction = 1.0;
     this.backgroundColor = "black";
     this.side1 = RectangleShape({
-      width: 2,
+      width: 5,
       height: 200
     }).addChildTo(this);
     this.side1.setPosition(375, 300);
     this.side1b = this.layer.createBody({
-      type: "static",
+      type: "kinematic",
       shape: "box"
     }).attachTo(this.side1);
     this.side2 = RectangleShape({
-      width: 2,
+      width: 5,
       height: 200
     }).addChildTo(this);
     this.side2.setPosition(225, 300);
     this.side2b = this.layer.createBody({
-      type: "static",
+      type: "kinematic",
       shape: "box"
     }).attachTo(this.side2);
     this.backgroundColor = "black";
