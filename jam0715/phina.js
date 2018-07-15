@@ -218,8 +218,8 @@
   });
 
   /**
-   * @method  $omit
-   * オミット
+   * @method  $toArray
+   * 配列化
    */
   Object.prototype.$method("$toArray", function() {
     return Array.prototype.slice.call(this);
@@ -319,20 +319,36 @@
 
 
 /*
- *
+ * number.js
  */
 
 
 ;(function() {
   /**
    * @class global.Number
-   * Numberの拡張
+   * # 拡張した Number クラス
+   * 数値を扱う Number クラスを拡張しています。
    */
 
   /**
-   * @method  round
-   * 四捨五入
-   * 桁数指定版
+   * @method round
+   * 指定した小数の位を四捨五入した値を返します。
+   *
+   * 負の値を指定すると整数部の位を四捨五入できます。
+   *
+   * ### Example
+   *     (13.87).round(); // => 14
+   *     (-1.87).round(); // => -2
+   *     (-1.27).round(); // => -1
+   *     
+   *     (2.345).round(); // => 2
+   *     (2.345).round(1); // => 2.3
+   *     (2.345).round(2); // => 2.35
+   *
+   *     (12345.67).round(-3); // => 12000
+   *
+   * @param {Number} [figure=0] 四捨五入する位
+   * @return {Number} 小数第 figure 位で四捨五入した値
    */
   Number.prototype.$method("round", function(figure) {
     figure = figure || 0;
@@ -343,9 +359,23 @@
   });
   
   /**
-   * @method  ceil
-   * 切り上げ.
-   * 桁数指定版
+   * @method ceil
+   * 指定した小数の位を切り上げた値を返します。
+   *
+   * 負の値を指定すると整数部の位を切り上げられます。
+   *
+   * ### Example
+   *     (-1.27).ceil(); // => -1
+   *     (-1.87).ceil(); // => -1
+   *     
+   *     (2.345).ceil(); // => 3
+   *     (2.345).ceil(1); // => 2.4
+   *     (2.345).ceil(2); // => 2.35
+   *
+   *     (12345.67).ceil(-3); // => 13000
+   *
+   * @param {Number} [figure=0] 切り上げる位
+   * @return {Number} 小数第 figure 位で切り上げた値
    */
   Number.prototype.$method("ceil",  function(figure) {
     figure = figure || 0;
@@ -354,10 +384,25 @@
     temp = Math.ceil(temp);
     return temp/base;
   });
+
   /**
-   * @method  floor
-   * 切り捨て
-   * 桁数指定版
+   * @method floor
+   * 指定した小数の位を切り下げた値を返します。
+   *
+   * 負の値を指定すると整数部の位を切り下げられます。
+   *
+   * ### Example
+   *     (-1.27).floor(); // => -2
+   *     (-1.87).floor(); // => -2
+   *     
+   *     (2.345).floor(); // => 2
+   *     (2.345).floor(1); // => 2.3
+   *     (2.345).floor(2); // => 2.34
+   *
+   *     (12345.67).floor(-3); // => 12000
+   *
+   * @param {Number} [figure=0] 切り下げる位
+   * @return {Number} 小数第 figure 位で切り下げた値
    */
   Number.prototype.$method("floor",  function(figure) {
     figure = figure || 0;
@@ -372,24 +417,44 @@
   });
   
   /**
-   * @method  toInt
-   * integer 型に変換する
+   * @method toInt
+   * 数値を整数に変換します。
+   *
+   * ### Example
+   *     (42.195).toInt(); // => 42
+   *
+   * @return {Number} 整数値
    */
   Number.prototype.$method("toInt",  function() {
     return (this | 0);
   });
   
   /**
-   * @method  toHex
-   * 16進数化
+   * @method toHex
+   * 数値を16進数表記にした文字列を返します。
+   *
+   * ### Example
+   *     (26).toHex(); // => "1a"
+   *     (-26).toHex(); // => "-1a"
+   *     (26.25).toHex(); // => "1a.4"
+   *
+   * @return {String} 16進数表記の文字列
    */
   Number.prototype.$method("toHex",  function() {
     return this.toString(16);
   });
   
   /**
-   * @method  toBin
-   * 2進数化
+   * @method toBin
+   * 数値を2進数表記にした文字列を返します。
+   *
+   * ### Example
+   *     (6).toBin(); // => "110"
+   *     (-6).toBin(); // => "-110"
+   *     (0xA3).toBin(); // => "10100011"
+   *     (6.25).toHex(); // => "110.01"
+   *
+   * @return {String} 2進数表記の文字列
    */
   Number.prototype.$method("toBin",  function() {
     return this.toString(2);
@@ -397,16 +462,37 @@
   
   
   /**
-   * @method  toUnsigned
-   * unsigned 型に変換する
+   * @method toUnsigned
+   * 数値を unsigned int 型に変換します。
+   *
+   * 数値を符号無し整数として評価した値を返します。  
+   * Javascriptのビット演算では数値を符号付きの32bit整数として扱うため、RGBA を
+   * 整数値で表現して演算する場合、期待通りの結果が得られない場合があります。
+   * そこで本関数で unsigned int 型に変換することで期待通りの値を得ることができます。
+   *
+   * ### Example
+   *     rgba = 0xfeffffff & 0xff000000; // => -33554432
+   *     rgba.toHex(); // => "-2000000"
+   *     rgba.toUnsigned().toHex(); // => "fe000000"
+   *
+   * @return {Number} unsigned int 型に変換した値
    */
   Number.prototype.$method("toUnsigned",  function() {
     return this >>> 0;
   });
   
   /**
-   * @method  padding
-   * 文字埋め
+   * @method padding
+   * 指定した桁になるように文字を埋めます。
+   *
+   * ### Example
+   *     (123).padding(5); // => "00123"
+   *     (123).padding(5, "_"); // => "__123"
+   *     (-12).padding(5); // => "-0012"
+   *
+   * @param {Number} n 桁数
+   * @param {String} [ch="0"] 埋める文字
+   * @return {String} 桁数を揃えた文字列
    */
   Number.prototype.$method("padding",  function(n, ch) {
     var str = this+'';
@@ -424,8 +510,17 @@
 
 
   /**
-   * @method  times
-   * 数値分繰り返す
+   * @method times
+   * 0 から自分自身の数-1まで、カウンタをインクリメントしながら関数を繰り返し実行します。
+   *
+   * ### Example
+   *     arr = [];
+   *     (5).times(function(i){
+   *       arr.push(i);
+   *     }); // => [0, 1, 2, 3, 4]
+   *
+   * @param {Function} fn コールバック関数
+   * @param {Object} [self=this] 関数内で this として参照される値。デフォルトは自分自身。
    */
   Number.prototype.$method("times",  function(fn, self) {
     self = self || this;
@@ -436,8 +531,25 @@
   });
 
   /**
-   * @method  upto
-   * インクリメント繰り返し
+   * @method upto
+   * 自分自身の数から指定した数まで、カウンタをインクリメントしながら関数を繰り返し実行します。
+   *
+   * 指定した数が自分自身の数より小さい場合は関数は実行されません。
+   *
+   * ### Example
+   *     arr = [];
+   *     (6).upto(8, function(i){
+   *       arr.push(i);
+   *     });
+   *     arr; // => [6, 7, 8]
+   *
+   *     (3).upto(0, function(i){
+   *       arr.push(i);
+   *     });
+   *     arr; // => [6, 7, 8]
+   *
+   * @param {Function} fn コールバック関数。引数にカウンタが渡される。
+   * @param {Object} [self=this] 関数内で this として参照される値。デフォルトは自分自身。
    */
   Number.prototype.$method("upto",  function(t, fn, self) {
     self = self || this;
@@ -448,8 +560,19 @@
   });
   
   /**
-   * @method  downto
-   * デクリメント繰り返し
+   * @method downto
+   * 自分自身の数から指定した数まで、カウンタをデクリメントしながら関数を繰り返し実行します。
+   *
+   * 指定した数が自分自身の数より大きい場合は関数は実行されません。
+   *
+   * ### Example
+   *     arr = [];
+   *     (7).downto(4, function(i){
+   *       arr.push(i);
+   *     }); // => [7, 6, 5, 4]
+   *
+   * @param {Function} fn コールバック関数。引数にカウンタが渡される。
+   * @param {Object} [self=this] 関数内で this として参照される値。デフォルトは自分自身。
    */
   Number.prototype.$method("downto",  function(t, fn, self) {
     self = self || this;
@@ -461,21 +584,42 @@
 
   /**
    * @method step
-   * ステップ繰り返し(float対応)
+   * 自分自身の値から指定した数まで、カウンタを増分させながら関数を繰り返し実行します。
+   *
+   * 上限値や増分値は float 型を指定することができます。
+   *
+   * ### Example
+   *     var arr = [];
+   *     (2.4).step(5.3, 0.8, function(n) {
+   *       arr.push(n);
+   *      }); // => [2.4, 3.2, 4.0, 4.8]
+   *
+   * @param {Number} limit カウンタの上限値
+   * @param {Number} step カウンタを増分する量
+   * @param {Function} fn コールバック関数。引数にカウンタが渡される。
+   * @param {Object} [self=this] 関数内で this として参照される値。デフォルトは自分自身。
    */
   Number.prototype.$method("step",  function(limit, step, fn, self) {
     self = self || this;
-    if (this < limit && step > 0 || this > limit && step < 0) {
-      for (var i=+this; i<=limit; i+=step) {
-        fn.call(self, i, this);
-      }
+    for (var i=+this; i<=limit; i+=step) {
+      fn.call(self, i, this);
     }
     return this;
   });
 
   /**
-   * @method  map
-   * return で返された値の配列を作る
+   * @method map
+   * 0から自分自身の値-1までカウンタをインクリメントさせながらコールバック関数を繰り返し実行し、
+   * その返り値を要素とする配列を生成します。
+   *
+   * ### Example
+   *     (5).map(function(i) {
+   *       return i*i;
+   *     }); // => [0, 1, 4, 9, 16]
+   *
+   * @param {Function} fn コールバック関数。引数にカウンタが渡される。
+   * @param {Object} [self=this] 関数内で this として参照される値。デフォルトは自分自身。
+   * @return {Array} 生成した配列
    */
   Number.prototype.$method("map",  function(fn, self) {
     self = self || this;
@@ -490,97 +634,193 @@
 
   /**
    * @method abs
-   * 絶対値
+   * 絶対値を返します。
+   *
+   * ### Example
+   *     (-5).abs(); // => 5
+   *     (+5).abs(); // => 5
+   *
+   * @return {Number} 絶対値
    */
   Number.prototype.$method("abs", function() { return Math.abs(this) });
 
   /**
    * @method acos
-   * アークコサイン
+   * アークコサイン（ラジアン単位）を返します。
+   *
+   * ### Example
+   *     (0).asin(); // => 0
+   *     (1).asin(); // => 1.5707963267948966
+   *
+   * @return {Number} アークコサイン
    */
   Number.prototype.$method("acos", function() { return Math.acos(this) });
 
   /**
    * @method asin
-   * アークサイン
+   * アークサイン（ラジアン単位）を返します。
+   *
+   * ### Example
+   *     (1).acos(); // => 0
+   *     (-1).acos(); // => 3.141592653589793
+   *
+   * @return {Number} アークサイン
    */
   Number.prototype.$method("asin", function() { return Math.asin(this) });
 
   /**
    * @method atan
-   * アークタンジェント
+   * アークタンジェント（ラジアン単位）を返します。
+   *
+   * ### Example
+   *     (0).atan(); // => 0
+   *     (1).atan(); // => 0.7853981633974483
+   *
+   * @return {Number} アークタンジェント
    */
   Number.prototype.$method("atan", function() { return Math.atan(this) });
 
   /**
    * @method cos
-   * コサイン
+   * コサイン（ラジアン単位）を返します。
+   *
+   * ### Example
+   *     (Math.PI/3).cos(); // => 0.5
+   *
+   * @return {Number} コサイン
    */
   Number.prototype.$method("cos", function() { return Math.cos(this) });
 
   /**
    * @method exp
-   * E^num
+   * e<sup>this</sup> を返します。ここで e は自然対数の底であるネイピア数（オイラー数）です。
+   *
+   * ### Example
+   *     (2).exp(); // => e<sup>2</sup>
+   *     (0).exp(); // => 1
+   *
+   * @return {Number} e<sup>x</sup>
    */
   Number.prototype.$method("exp", function() { return Math.exp(this) });
 
   /**
    * @method log
-   * 自然対数
+   * 自然対数を返します。
+   *
+   * ### Example
+   *     (Math.E * Math.E * Math.E).log(); // => 3
+   *     (1).log(); // => 0
+   *     (0).log(); // => -Infinity
+   *
+   * @return {Number} 自然対数
    */
   Number.prototype.$method("log", function() { return Math.log(this) });
 
   /**
    * @method max
-   * max
+   * 自分自身と引数の値を比べ、大きい方の値を返します。
+   *
+   * ### Example
+   *     (15).max(10); // => 15
+   *     (15).max(90); // => 90
+   *
+   * @param {Number} value 比較する値
+   * @return {Number} 最大値
    */
   Number.prototype.$method("max", function(value) { return Math.max(this, value) });
 
   /**
    * @method min
-   * min
+   * 自分自身と引数の値を比べ、小さい方の値を返します。
+   *
+   * ### Example
+   *     (15).min(10); // => 10
+   *     (15).min(90); // => 15
+   *
+   * @param {Number} value 比較する値
+   * @return {Number} 最小値
    */
   Number.prototype.$method("min", function(value) { return Math.min(this, value) });
 
   /**
    * @method clamp
-   * clamp
+   * 指定した範囲に収めた値を返します。
+   *
+   * ### Example
+   *     (200).clamp(0, 640); // => 200
+   *     (-15).clamp(0, 640); // => 0
+   *     (999).clamp(0, 640); // => 640
+   *
+   * @param {Number} min 範囲の下限
+   * @param {Number} max 範囲の上限
+   * @return {Number} 範囲内に収めた値
    */
   Number.prototype.$method("clamp", function(min, max) { return Math.clamp(this, min, max) });
 
   /**
    * @method pow
-   * 乗数
+   * 自分自身を exponent 乗した値、つまり this<sup>exponent</sup> の値を返します。
+   *
+   * ### Example
+   *     (3).pow(2); // => 9
+   *
+   * @param {Number} exponent 累乗する指数
+   * @return {Number} 累乗した結果の値
    */
   Number.prototype.$method("pow", function(exponent) { return Math.pow(this, exponent) });
 
   /**
    * @method sin
-   * サイン
+   * サイン（ラジアン単位）を返します。
+   *
+   * ### Example
+   *     (Math.PI/4).sin(); // => 0.7071067811865476
+   *
+   * @return {Number} サイン
    */
   Number.prototype.$method("sin", function() { return Math.sin(this) });
 
   /**
    * @method sqrt
-   * 平方根
+   * 平方根を返します。
+   *
+   * ### Example
+   *     (49).sqrt(); // => 7
+   *
+   * @return {Number} 平方根
    */
   Number.prototype.$method("sqrt", function() { return Math.sqrt(this) });
 
   /**
    * @method tan
-   * タンジェント
+   * タンジェント（ラジアン単位）を返します。
+   *
+   * ### Example
+   *     (Math.PI/4).tan(); // => 1.0
+   *
+   * @return {Number} タンジェント
    */
   Number.prototype.$method("tan", function() { return Math.tan(this) });
 
   /**
    * @method toDegree
-   * to degree
+   * ラジアンを度に変換します。
+   *
+   * ### Example
+   *     Math.radToDeg(Math.PI/4); // => 45
+   *
+   * @return {Number} 度
    */
   Number.prototype.$method("toDegree", function() { return (this*Math.RAD_TO_DEG); });
 
   /**
    * @method toRadian
-   * to degree
+   * 度をラジアンに変換します。
+   *
+   * ### Example
+   *     (180).toRadian(); // => 3.141592653589793
+   *
+   * @return {Number} ラジアン
    */
   Number.prototype.$method("toRadian", function() { return this*Math.DEG_TO_RAD; });
 
@@ -588,27 +828,35 @@
 
 
 /*
- *
+ * string.js
  */
 
 
 ;(function() {
   /**
    * @class global.String
-   * Stringの拡張
-   * `String` is a global object that may be used to construct String instances.
+   * # 拡張した String クラス
+   * 文字列を扱う String クラスを拡張しています。
    */
 
   /**
-   * @method  format
-   * フォーマット
-   * ## example
-   *      document.write("{0} + {1} = {2}".format(5, 10, 5+10));   // "5 + 10 = 15"
-   *      document.write("rgb({r}, {g}, {b})".format({             // "rgb(128, 0, 255)"
-   *          r: 128,
-   *          g: 0,
-   *          b: 255
-   *      }));
+   * @method format
+   * フォーマットに引数を適用した文字列を返します。
+   *
+   * 引数がオブジェクトの場合、"{プロパティ名}" がオブジェクトのプロパティの値に置き換わります。
+   * 指定したプロパティがオブジェクトにない場合は空文字列になります。
+   *
+   * 第1引数がオブジェクトでなかった場合、"{整数}" が各引数に置き換わります。
+   * 指定した値の引数がなかった場合は空文字列になります。
+   *
+   * ### Example
+   *     obj = {r: 128, g: 0, b: 255};
+   *     "color: rgb({r}, {g}, {b});".format(obj); // => "color: rgb(128, 0, 255);"
+   *
+   *     "{0} + {1} = {2}".format(5, 8, (5+8)); // => "5 + 8 = 13"
+   *
+   * @param {Object} obj パラメータとなるオブジェクト
+   * @return {String} 生成した文字列
    */
   String.prototype.$method("format", function(arg) {
     // 置換ファンク
@@ -646,29 +894,35 @@
 
 
   /**
-   * @method  trim
-   * トリム
-   * ## example
-   *      "  Hello, world!  ".trim(); // "Hello, world!"
-   * <a href="http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/">Reference</a>
-   * 
+   * @method trim
+   * 文字列先頭と末尾の空白文字を全て取り除いた文字列を返します。
+   *
+   * ###Reference
+   * - [String Functions for Javascript – trim, to camel case, to dashed, and to underscore](http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/)
+   *
+   * ### Example
+   *     "  Hello, world!  ".trim(); // => "Hello, world!"
+   *
+   * @return {String} トリムした結果の文字列
    */
   String.prototype.$method("trim", function() {
     return this.replace(/^\s+|\s+$/g, "");
   });
   
   /**
-   * @method  capitalize
-   * キャピタライズ
-   * 
-   * ## example
-   *      "i am a pen.".capitalize(); // "I Am A Pen."
-   * 
-   * ## Reference
-   * 
-   * - [キャピタライズ(単語の先頭の大文字化)を行う - oct inaodu](http://d.hatena.ne.jp/brazil/20051212/1134369083)
+   * @method capitalize
+   * キャピタライズした文字列、すなわち、すべての単語の先頭を大文字にした文字列を返します。
+   *
+   * 単語の先頭以外は小文字化されます。
+   *
+   * ###Reference
+   * - [キャピタライズ(単語の先頭の大文字化)を行う - oct inaodu](http://d.hatena.ne.jp/brazil/20051212/1134369083)  
    * - [デザインとプログラムの狭間で: javascriptでキャピタライズ（一文字目を大文字にする）](http://design-program.blogspot.com/2011/02/javascript.html)
-   * 
+   *
+   * ### Example
+   *     "i aM a pen.".capitalize(); // => "I Am A Pen."
+   *
+   * @return {String} キャピタライズした文字列
    */
   String.prototype.$method("capitalize", function() {
     return this.replace(/\w+/g, function(word){
@@ -677,16 +931,28 @@
   });
   
   /**
-   * @method  capitalizeFirstLetter
-   * 先頭文字のみキャピタライズ
+   * @method capitalizeFirstLetter
+   * 先頭の文字を大文字にして、それ以外を小文字にした文字列を返します。
+   *
+   * ### Example
+   *     "i aM a pen.".capitalizeFirstLetter(); // "I am a pen."
+   *
+   * @return {String} 先頭の文字を大文字にして、それ以外を小文字にした文字列
    */
   String.prototype.$method("capitalizeFirstLetter", function() {
     return this.charAt(0).toUpperCase() + this.substr(1).toLowerCase();
   });
   
   /**
-   * @method  toDash
-   * ダッシュ
+   * @method toDash
+   * 文字列内の大文字を「"-" + 小文字」に変換します。
+   *
+   * css2properties（element.style）の各プロパティ名を CSS のプロパティ名に変換する場合に便利です。
+   *
+   * ### Example
+   *     "borderTopColor".toDash(); // => "border-top-color"
+   *
+   *  @return {String} 変換後の文字列
    */
   String.prototype.$method("toDash", function() {
     return this.replace(/([A-Z])/g, function(m){ return '-'+m.toLowerCase(); });
@@ -695,15 +961,28 @@
   
   /**
    * @method toHash
-   * ハッシュ値に変換
+   * ハッシュ値を生成して返します。
+   *
+   * ### Example
+   *     "phina.js".toHash(); // => 2676327394
+   *
+   * @return {Number} CRC32ハッシュ値
    */
   String.prototype.$method("toHash", function() {
     return this.toCRC32();
   });
   
   /**
-   * @method  padding
-   * 左側に指定された文字を詰めて右寄せにする
+   * @method padding
+   * 左に文字を埋めて指定した桁にします。this の文字列は右寄せされます。
+   *
+   * ### Example
+   *     "1234".padding(10);      // => "      1234"
+   *     "1234".padding(10, '0'); // => "0000001234"
+   *
+   * @param {Number} figure 桁数
+   * @param {String} [ch=" "] 埋める文字
+   * @return {String} 指定した桁の文字列
    */
   String.prototype.$method("padding", function(n, ch) {
     var str = this.toString();
@@ -716,8 +995,11 @@
   });
   
   /**
-   * @method  paddingLeft
-   * 左側に指定された文字を詰めて右寄せにする
+   * @method paddingLeft
+   * 左に文字を埋めて指定した桁にします。this の文字列を右寄せされます。
+   *
+   * {@link #padding} と同じです。
+   * @inheritdoc #padding
    */
   String.prototype.$method("paddingLeft", function(n, ch) {
     var str = this.toString();
@@ -730,8 +1012,16 @@
   });
   
   /**
-   * @method  paddingRight
-   * 右側に指定された文字を詰めて左寄せにする
+   * @method paddingRight
+   * 右に文字を埋めて指定した桁にします。this の文字列は左寄せされます。
+   *
+   * ### Example
+   *     "1234".paddingRight(10);      // => "1234      "
+   *     "1234".paddingRight(10, '0'); // => "1234000000"
+   *
+   * @param {Number} figure 桁数
+   * @param {String} [ch=" "] 埋める文字
+   * @return {String} 指定した桁の文字列
    */
   String.prototype.$method("paddingRight", function(n, ch) {
     var str = this.toString();
@@ -744,16 +1034,27 @@
   });
   
   /**
-   * @method  quotemeta
-   * メタ文字をクォート
+   * @method quotemeta
+   * 正規表現のメタ文字をクォートします。
+   *
+   * ### Example
+   *     "Hello world. (can you hear me?)".quotemeta(); // => "Hello\\ world\\.\\ \\(can\\ you\\ hear\\ me\\?\\)"
+   *
+   *  @return {String} クォートされた文字列
    */
   String.prototype.$method("quotemeta", function(n) {
     return this.replace(/([^0-9A-Za-z_])/g, '\\$1');
   });
   
   /**
-   * @method  repeat
-   * リピート
+   * @method repeat
+   * 自分自身を指定した回数だけ繰り返した文字列を返します。
+   *
+   * ### Example
+   *     "Abc".repeat(4); // => "AbcAbcAbcAbc"
+   *
+   * @param {Number} n 繰り返し回数
+   * @return {String} 文字列
    */
   String.prototype.$method("repeat", function(n) {
     // TODO: 確認する
@@ -763,8 +1064,16 @@
   });
   
   /**
-   * @method  count
-   * その文字が入ってる数をカウント
+   * @method count
+   * 指定した文字列が何個入っているかをカウントして返します。
+   *
+   * 大文字・小文字は区別されます。
+   *
+   * ### Example
+   *     "This is a string. Isn't it?".count("is"); // => 2
+   *
+   * @param {String} str 調べる文字列
+   * @return {Number} this に str が入っている個数
    */
   String.prototype.$method("count", function(str) {
     var re = new RegExp(str, 'gm');
@@ -772,17 +1081,52 @@
   });
   
   /**
-   * @method  include
-   * 含んでいるかを返す
-   * ruby のやつ
+   * @method include
+   * 指定した文字列が含まれているかどうかを返します。
+   *
+   * 大文字・小文字は区別されます。
+   *
+   * ### Example
+   *     "This is a string.".include("is"); // => true
+   *     "This is a string.".include("was"); // => false
+   *
+   * @param {String} str 調べる文字列
+   * @return {Boolean} 含まれているかどうか
    */
   String.prototype.$method("include", function(str) {
     return this.indexOf(str) != -1;
   });
   
   /**
-   * @method  toString
-   * 配列に変換
+   * @method each
+   * 各文字を順番に渡しながら関数を繰り返し実行します。
+   *
+   * ### Example
+   *     str = 'abc';
+   *     str.each(function(ch) {
+   *       console.log(ch);
+   *     });
+   *     // => 'a'
+   *     //    'b'
+   *     //    'c'
+   *
+   * @param {Function} callback 各要素に対して実行するコールバック関数
+   * @param {Object} [self=this] callback 内で this として参照される値
+   */
+  String.prototype.$method("each", function() {
+    Array.prototype.forEach.apply(this, arguments);
+    return this;
+  });
+  
+  /**
+   * @method toArray
+   * 1文字ずつ分解した配列を返します。
+   *
+   * ### Example
+   *     "12345".toArray(); // => ["1", "2", "3", "4", "5"]
+   *     "あいうえお".toArray(); // => "あ", "い", "う", "え", "お"]
+   *
+   * @return {String[]} 配列
    */
   String.prototype.$method("toArray", function() {
     var arr = [];
@@ -792,6 +1136,23 @@
     return arr;
   });
   
+  /**
+   * @method toObject
+   * キーと値の組み合わせが連結された文字列からオブジェクトを生成します。
+   *
+   * 値は Number、Boolean、String のいずれかの型として評価されます。
+   *
+   * ### Example
+   *     obj1 = "num=128.5&flag1=true&flag2=false&str=hoge";
+   *     obj1.toObject(); // => {num: 128.5, flag1: true, flag2: false, str: "hoge" }
+   *     
+   *     obj2 = "num:-64.5|flag1:false|flag2:true|str:foo";
+   *     obj2.toObject('|', ':'); // => {num: -64.5, flag1: false, flag2: true, str: "foo" }
+   *
+   * @param {String} [sep="&"] セパレータ文字
+   * @param {String} [eq=""] キーと値の組み合わせを表す文字
+   * @return {Object} オブジェクト
+   */
   String.prototype.$method("toObject", function(sep, eq) {
     sep = sep || '&';
     eq  = eq || '=';
@@ -825,8 +1186,13 @@
   var table = "00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D".split(' ');
   
   /**
-   * @method  toCRC32
-   * CRC32 変換
+   * @method toCRC32
+   * 文字列の CRC32 を計算します。
+   *
+   * ### Example
+   *     "phina.js".toCRC32(); // => 2676327394
+   *
+   * @return {Number} CRC32 ハッシュ値
    */
   String.prototype.$method("toCRC32", function() {
     var crc = 0, x=0, y=0;
@@ -853,17 +1219,17 @@
   /**
    * @class global.Array
    * # 拡張した Array クラス
-   * Array クラスを拡張しています
+   * Array クラスを拡張しています。
    */
 
 
   /**
    * @property {Object} first
    * 最初の要素
-   * 
-   *     @example   
-   *     arr = [6, 5, 2, 3, 1, 4]
-   *     console.log(arr.first); // => 6
+   *
+   * ### Example
+   *     arr = [6, 5, 2, 3, 1, 4];
+   *     arr.first; // => 6
    */
   Array.prototype.accessor("first", {
       "get": function()   { return this[0]; },
@@ -874,7 +1240,8 @@
    * @property {Object} last
    * 最後の要素
    *
-   *     arr = [6, 5, 2, 3, 1, 4]
+   * ### Example
+   *     arr = [6, 5, 2, 3, 1, 4];
    *     arr.last; // => 4
    */
   Array.prototype.accessor("last", {
@@ -884,10 +1251,11 @@
 
   /**
    * @method equals
-   * 渡された配列と等しいかどうかをチェックします
+   * 渡された配列と等しいかどうかをチェックします。
    *
-   * 要素同士を === で比較します。要素に配列が含まれている場合は {@link global.Array#deepEquals} を使用してください。
+   * 要素同士を === で比較します。要素に配列が含まれている場合は {@link #deepEquals} を使用してください。
    *
+   * ### Example
    *     arr1 = [6, 5, 2, 3, 1, 4];
    *     arr1.equals([6, 5, 2, 3, 1, 4]);       // => true
    *     arr2 = [6, 5, 2, [3, 1], 4];
@@ -912,13 +1280,14 @@
 
   /**
    * @method deepEquals
-   * ネストされている配列を含め、渡された配列と等しいかどうかをチェックします
+   * ネストされている配列を含め、渡された配列と等しいかどうかをチェックします。
    *
+   * ※equalsDeep にするか検討. (Java では deepEquals なのでとりあえず合わせとく)
+   *
+   * ### Example
    *     arr = [6, 5, 2, [3, 1], 4];
    *     arr.equals([6, 5, 2, [3, 1], 4]);     // => false
    *     arr.deepEquals([6, 5, 2, [3, 1], 4]); // => true
-   *
-   * equalsDeep にするか検討. (Java では deepEquals なのでとりあえず合わせとく)
    *
    * @param {Array} arr 比較する対象の配列
    * @return {Boolean} チェックの結果
@@ -938,10 +1307,11 @@
 
   /**
    * @method contains
-   * 指定した要素が配列に含まれているかをチェックします
+   * 指定した要素が配列に含まれているかをチェックします。
    *
    * 比較には厳密な同値（三重イコール演算子 === で使われるのと同じ方法）を用います。
    *
+   * ### Example
    *     arr = [6, 5, 2, 3, 1, 4];
    *     arr.contains(3);     // => true
    *     arr.contains(3, 4);  // => false
@@ -958,11 +1328,12 @@
   
   /**
    * @method at
-   * 指定したインデックスの要素を返します（ループ・負数の指定可）
+   * 指定したインデックスの要素を返します（ループ・負数の指定可）。
    *
    * 添字が負数の場合は末尾からのオフセットとみなします。末尾の要素が -1 番目になります。  
    * 添字の絶対値が Array.length 以上の場合はループします。
    *
+   * ### Example
    *     arr = ['a', 'b', 'c', 'd', 'e', 'f'];
    *     arr.at(0);  // => 'a'
    *     arr.at(6);  // => 'a'
@@ -983,10 +1354,11 @@
 
   /**
    * @method find
-   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）最初の要素を返します
+   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）最初の要素を返します。
    *
    * どの要素もマッチしなければ undefined を返します。
    *
+   * ### Example
    *     arr = ['foo', 'bar', 'hoge', 'fuga'];
    *     arr.find( function(elm) {
    *       return elm.indexOf('a') >= 0;
@@ -1012,10 +1384,11 @@
 
   /**
    * @method findIndex
-   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）最初のインデックスを返します
+   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）最初のインデックスを返します。
    *
    * どの要素もマッチしなければ -1 を返します。
    *
+   * ### Example
    *     arr = ['foo', 'bar', 'hoge', 'fuga'];
    *     arr.findIndex( function(elm) {
    *       return elm.indexOf('a') >= 0;
@@ -1042,8 +1415,9 @@
   /**
    * @method swap
    * @chainable
-   * a 番目の要素 と b 番目の要素を入れ替えます
+   * a 番目の要素 と b 番目の要素を入れ替えます。
    *
+   * ### Example
    *     arr1 = ['a', 'b', 'c', 'd'];
    *     arr2 = arr1.swap(0, 3); // => ['d', 'b', 'c', 'a']
    *     arr1 === arr2;          // => true
@@ -1062,8 +1436,9 @@
   /**
    * @method erase
    * @chainable
-   * 指定したオブジェクトと一致した最初の要素を削除します
+   * 指定したオブジェクトと一致した最初の要素を削除します。
    *
+   * ### Example
    *     arr1 = ['a', 'b', 'b', 'c'];
    *     arr2 = arr1.erase('b'); // => ['a', 'b', 'c']
    *     arr1 === arr2;          // => true
@@ -1081,8 +1456,9 @@
   /**
    * @method eraseAll
    * @chainable
-   * 指定したオブジェクトと一致したすべての要素を削除します
+   * 指定したオブジェクトと一致したすべての要素を削除します。
    *
+   * ### Example
    *     arr1 = ['a', 'b', 'b', 'c'];
    *     arr2 = arr1.eraseAll('b'); // => ['a', 'c']
    *     arr1 === arr2;             // => true
@@ -1101,10 +1477,11 @@
   /**
    * @method eraseIf
    * @chainable
-   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）最初の要素を削除します
+   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）最初の要素を削除します。
    *
    * どの要素もマッチしなければ何も起きません。
    *
+   * ### Example
    *     arr = ['foo', 'bar', 'hoge', 'fuga'];
    *     arr.eraseIf( function(elm) {
    *       return elm.indexOf('o') >= 0;
@@ -1126,10 +1503,11 @@
   /**
    * @method eraseIfAll
    * @chainable
-   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）すべての要素を削除します
+   * 各要素を引数にして関数を実行し、その値が真となる（＝条件にマッチする）すべての要素を削除します。
    *
    * どの要素もマッチしなければ何も起きません。
    *
+   * ### Example
    *     arr = ['foo', 'bar', 'hoge', 'fuga'];
    *     arr.eraseIfAll( function(elm) {
    *       return elm.indexOf('o') >= 0;
@@ -1150,11 +1528,12 @@
   
   /**
    * @method random
-   * 配列からランダムに1つ取り出した要素を返します
+   * 配列からランダムに1つ取り出した要素を返します。
    *
    * 取り出す範囲をインデックスで指定することもできます。  
-   * {@link global.Array#pickup}、{@link global.Array#lot} と同じです。  
+   * {@link #pickup}、{@link #lot} と同じです。  
    *
+   * ### Example
    *     arr = ['foo', 'bar', 'hoge', 'fuga'];
    *     arr.random(2, 3);  // => 'hoge' または 'fuga'
    *
@@ -1170,10 +1549,10 @@
   
   /**
    * @method pickup
-   * 配列からランダムで1つ取り出した要素を返します
+   * 配列からランダムで1つ取り出した要素を返します。
    *
-   * {@link global.Array#random}、{@link global.Array#lot} と同じです。
-   * @inheritdoc global.Array#random
+   * {@link #random}、{@link #lot} と同じです。
+   * @inheritdoc #random
    */
   Array.prototype.$method("pickup", function(min, max) {
     min = min || 0;
@@ -1183,10 +1562,10 @@
   
   /**
    * @method lot
-   * 配列からランダムで1つ取り出した要素を返します
+   * 配列からランダムで1つ取り出した要素を返します。
    *
-   * {@link global.Array#random}、{@link global.Array#pickup} と同じです。
-   * @inheritdoc global.Array#random
+   * {@link #random}、{@link #pickup} と同じです。
+   * @inheritdoc #random
    */
   Array.prototype.$method("lot", function(min, max) {
     min = min || 0;
@@ -1196,10 +1575,11 @@
   
   /**
    * @method uniq
-   * 要素の重複を取り除いた配列を生成して返します
+   * 要素の重複を取り除いた配列を生成して返します。
    *
    * 自分自身は破壊されません。
    *
+   * ### Example
    *     arr = [1, 2, 3, 4, 3, 2];
    *     arr.uniq(); // => [1, 2, 3, 4]
    *
@@ -1215,10 +1595,11 @@
 
   /**
    * @method flatten
-   * 自身を再帰的に平滑化した配列を生成して返します
+   * 自身を再帰的に平滑化した配列を生成して返します。
    *
    * level を指定しなければ深さの際限なく完全に平滑化します。
    *
+   * ### Example
    *     arr = [1, 2, [3, [4, 5]]];
    *     arr.flatten();  // => [1, 2, 3, 4, 5]
    *     arr.flatten(1); // => [1, 2, 3, [4, 5]]
@@ -1248,8 +1629,9 @@
 
   /**
    * @method clone
-   * 自身のコピーを生成して返します
+   * 自身のコピーを生成して返します。
    *
+   * ### Example
    *     arr1 = [1, 2, [3, 4]];
    *     arr2 = arr1.clone();      // => [1, 2, [3, 4]]
    *     arr1[2] === arr2[2];      // => true
@@ -1281,8 +1663,9 @@
   /**
    * @method clear
    * @chainable
-   * 自身を空の配列にします
+   * 自身を空の配列にします。
    *
+   * ### Example
    *     arr = [1, 2, [3, 4]];
    *     arr.clear(); // => []
    */
@@ -1294,8 +1677,9 @@
   /**
    * @method fill
    * @chainable
-   * 自身の一部の要素を特定の値で埋めます
+   * 自身の一部の要素を特定の値で埋めます。
    *
+   * ### Example
    *     arr = [1, 2, 3, 4, 5];
    *     arr.fill("x");       // => ["x", "x", "x", "x", "x"]
    *     arr.fill("x", 2, 4); // => [1, 2, "x", "x", 5]
@@ -1319,19 +1703,20 @@
   /**
    * @method range
    * @chainable
-   * 自身を等差数列（一定間隔の整数値の列）とします
+   * 自身を等差数列（一定間隔の整数値の列）とします。
    *
-   * 引数が1つの場合、0～end（end含まず）の整数の配列です  
-   * 引数が2つの場合、start～end（end含まず）の整数の配列です  
-   * 引数が3つの場合、start～end（end含まず）かつ start + n * step (nは整数)を満たす整数の配列です
+   * - 引数が1つの場合、0～end（end含まず）の整数の配列です。  
+   * - 引数が2つの場合、start～end（end含まず）の整数の配列です。  
+   * - 引数が3つの場合、start～end（end含まず）かつ start + n * step (nは整数)を満たす整数の配列です。
    *
+   * ### Example
    *     arr = [];
    *     arr.range(4);        // => [0, 1, 2, 3]
    *     arr.range(2, 5);     // => [2, 3, 4]
    *     arr.range(2, 14, 5); // => [2, 7, 12]
    *     arr.range(2, -3);    // => [2, 1, 0, -1, -2]
    *
-   * @param {Number} start 最初の値
+   * @param {Number} start 最初の値（デフォルトは 0）
    * @param {Number} end 最後の値（省略不可）
    * @param {Number} [step=1または-1] 間隔
    */
@@ -1364,8 +1749,9 @@
   /**
    * @method shuffle
    * @chainable
-   * 自身の要素をランダムにシャッフルします
+   * 自身の要素をランダムにシャッフルします。
    *
+   * ### Example
    *     arr = [1, 2, 3, 4, 5];
    *     arr.shuffle(); // => [5, 1, 4, 2, 3] など
    */
@@ -1383,10 +1769,11 @@
 
   /**
    * @method sum
-   * 要素の合計値を返します
+   * 要素の合計値を返します。
    *
    * 要素に数値以外が含まれる場合の挙動は不定です。
    *
+   * ### Example
    *     arr = [1, 2, 3, 4, 5, 6];
    *     arr.sum(); // => 21
    *
@@ -1402,10 +1789,11 @@
 
   /**
    * @method average
-   * 要素の平均値を返します
+   * 要素の平均値を返します。
    *
    * 要素に数値以外が含まれる場合の挙動は不定です。
    *
+   * ### Example
    *     arr = [1, 2, 3, 4, 5, 6]
    *     arr.average(); // => 3.5
    *
@@ -1423,22 +1811,23 @@
   /**
    * @method each
    * @chainable
-   * 要素を順番に渡しながら関数を繰り返し実行します
+   * 要素を順番に渡しながら関数を繰り返し実行します。
    *
    * メソッドチェーンに対応していますが、このメソッドによって自分自身は変化しません。
    *
+   * ###Reference
+   * - [Array.prototype.forEach() - JavaScript | MDN](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+   *
+   * ### Example
    *     arr = [1, 2, 3];
    *     arr.each( function(elm) {
    *       console.log(elm * elm)
    *     });
    *     // => 1
-   *           4
-   *           9
+   *     //    4
+   *     //    9
    *
    * @param {Function} callback 各要素に対して実行するコールバック関数
-   * @param {Object} callback.currentValue 現在処理されている配列の要素
-   * @param {Number} callback.index 現在処理されている配列の要素のインデックス
-   * @param {Array} callback.array 適用されている配列
    * @param {Object} [self=this] callback 内で this として参照される値
    */
   Array.prototype.$method("each", function() {
@@ -1467,8 +1856,9 @@
   /**
    * @method range
    * @static
-   * インスタンスメソッドの {@link global.Array#range} と同じです
+   * インスタンスメソッドの {@link #range} と同じです。
    *
+   * ### Example
    *     Array.range(2, 14, 5); // => [2, 7, 12]
    */
   Array.$method("range", function(start, end, step) {
@@ -1479,10 +1869,9 @@
   /**
    * @method of
    * @static
-   * ES6 準拠の of 関数です
+   * ES6 準拠の of 関数です。可変長引数をとって Array オブジェクトにして返します。
    *
-   * 可変長引数をとって Array オブジェクトにして返します。
-   *
+   * ### Example
    *     Array.of();        // => []
    *     Array.of(1, 2, 3); // => [1, 2, 3]
    *
@@ -1496,12 +1885,15 @@
   /**
    * @method from
    * @static
-   * ES6 準拠の from 関数です
+   * ES6 準拠の from 関数です。array-like オブジェクトかiterable オブジェクトから新しい配列を生成します。
    *
-   * array-like オブジェクトから新しい配列を生成します。  
-   * array-like オブジェクトとは、length プロパティを持ち、数字の添字でアクセス可能なオブジェクトのことです。  
+   * array-like オブジェクトとは、length プロパティを持ち、数字の添字でアクセス可能なオブジェクトのことです。
    * 通常の配列のほか、String、arguments、NodeList なども array-like オブジェクトです。
    *
+   * iterable オブジェクトとは、Symbol.iterator プロパティを持つオブジェクトのことです。
+   * 通常の配列のほか、String、arguments、NodeList なども iterable オブジェクトです。
+   *
+   * ### Example
    *     Array.from([1, 2, 3], function(elm){ return elm * elm} ); // => [1, 4, 9]
    *     Array.from("foo");                                        // => ["f", "o", "o"]
    *     Array.from( document.querySelectorAll("span"))            // => [Element, Element, Element,...]
@@ -1514,17 +1906,34 @@
   Array.$method("from", function(arrayLike, callback, context) {
     if (!Object(arrayLike).length) return [];
 
-    return Array.prototype.map.call(arrayLike, typeof callback == 'function' ? callback : function(item) {
+    var result = [];
+    if (Symbol && Symbol.iterator && arrayLike[Symbol.iterator]) {
+        var iterator = arrayLike[Symbol.iterator]();
+        while (true) {
+            var iteratorResult = iterator.next();
+            if (iteratorResult.done) break;
+
+            var value = typeof callback === 'function' ? callback.bind(context || this)(iteratorResult.value) : iteratorResult.value;
+            result.push(value);
+        }
+        return result;
+    }
+
+    for (var i = 0, len = arrayLike.length; i < len; i++) {
+        result.push(arrayLike[i]);
+    }
+    return result.map(typeof callback == 'function' ? callback : function(item) {
       return item;
     }, context);
   });
   
   /**
    * @method most
-   * 指定した関数の返り値が最小となる要素と最大となる要素をまとめて返します
+   * 指定した関数の返り値が最小となる要素と最大となる要素をまとめて返します。
    *
    * 空の配列に対して実行すると {max: Infinity, min: -Infinity} を返します。
    *
+   * ### Example
    *     [5,1,4,1,9,2,-10].most(); // => {max:9, min: -10}
    *
    *     points = [ {x:0, y:0}, {x:640, y:960}, {x:-80, y:100} ];
@@ -1592,8 +2001,9 @@
 (function() {
   
   /**
-   * @class   global.Date
-   * Date(日付)の拡張
+   * @class global.Date
+   * # 拡張した Date クラス
+   * 日付を扱う Date クラスを拡張しています。
    */
   
   var MONTH = [
@@ -1605,8 +2015,36 @@
   ];
   
   /**
-   * @method  format
-   * 日付フォーマットに合わせた文字列を返す
+   * @method format
+   * 指定したフォーマットに従って日付を文字列化します。
+   *
+   * <table border="1">
+   *   <tr><td>変換指定文字列</td><td>意味</td></tr>
+   *   <tr><td>yyyy</td><td>西暦年（4桁）</td></tr>
+   *   <tr><td>yy</td><td>西暦年（2桁）</td></tr>
+   *   <tr><td>y</td><td>西暦年</td></tr>
+   *   <tr><td>MMMM</td><td>月（英語名）</td></tr>
+   *   <tr><td>MMM</td><td>月（英語省略名）</td></tr>
+   *   <tr><td>MM</td><td>月（2桁数字）</td></tr>
+   *   <tr><td>M</td><td>月</td></tr>
+   *   <tr><td>dd</td><td>日（2桁）</td></tr>
+   *   <tr><td>d</td><td>日</td></tr>
+   *   <tr><td>EEEE</td><td>曜日（英語名）</td></tr>
+   *   <tr><td>EEE</td><td>曜日（英語省略名）</td></tr>
+   *   <tr><td>HH</td><td>時（24時間表記・2桁）</td></tr>
+   *   <tr><td>H</td><td>時（24時間表記）</td></tr>
+   *   <tr><td>mm</td><td>分（2桁）</td></tr>
+   *   <tr><td>m</td><td>分</td></tr>
+   *   <tr><td>ss</td><td>秒（2桁）</td></tr>
+   *   <tr><td>s</td><td>秒</td></tr>
+   * </table>
+   * 桁数が指定されているものは0パディングされます。
+   *
+   * ### Example
+   *     (new Date()).format("yyyy-MM-dd(EEE)"); // => "2016-04-05(Tue)" など
+   *
+   * @param {String} pattern フォーマット文字列
+   * @return {String} フォーマット文字列に従って生成された文字列
    */
   Date.prototype.$method('format', function(pattern) {
     var year    = this.getFullYear();
@@ -1676,8 +2114,20 @@
   });
 
 
-  /*
-   * http://qiita.com/n0bisuke/items/dd537bd4cbe9ab501ce8
+  /**
+   * @method calculateAge
+   * @static
+   * 指定した誕生日から、現在または指定した日付における年齢を計算します。
+   *
+   * ###Reference
+   * - [Javascriptで誕生日から現在の年齢を算出](http://qiita.com/n0bisuke/items/dd537bd4cbe9ab501ce8)
+   *
+   * ### Example
+   *     Date.calculateAge("1990-01-17"); // => 26 など
+   *
+   * @param {String/Date} birthday 誕生日
+   * @param {String/Date} [when=本日] 基準の日付
+   * @return {Number} 年齢
    */
   Date.$method('calculateAge', function(birthday, when) {
     // birthday
@@ -1709,39 +2159,54 @@
     
   /**
    * @class global.Math
-   * Mathの拡張
+   * # 拡張した Math クラス
+   * 数学的な処理を扱う Math クラスを拡張しています。
    */
 
   
   /**
-   * @property    DEG_TO_RAD
-   * Degree to Radian.
+   * @property DEG_TO_RAD
+   * 度をラジアンに変換するための定数です。
    */
   Math.DEG_TO_RAD = Math.PI/180;
   
   /**
-   * @property    RAD_TO_DEG
-   * Radian to Degree.
+   * @property RAD_TO_DEG
+   * ラジアンを度に変換するための定数です。
    */
   Math.RAD_TO_DEG = 180/Math.PI;
   
   /**
-   * @property    PHI
-   * golden ratio
+   * @property PHI
+   * 黄金比です。
    */
   Math.PHI = (1 + Math.sqrt(5)) / 2;
   
   /**
-   * @method
-   * Degree を Radian に変換
+   * @static
+   * @method degToRad
+   * 度をラジアンに変換します。
+   *
+   * ### Example
+   *     Math.degToRad(180); // => 3.141592653589793
+   *
+   * @param {Number} deg 度
+   * @return {Number} ラジアン
    */
   Math.degToRad = function(deg) {
     return deg * Math.DEG_TO_RAD;
   };
   
   /**
-   * @method
-   * Radian を Degree に変換
+   * @static
+   * @method radToDeg
+   * ラジアンを度に変換します。
+   *
+   * ### Example
+   *     Math.radToDeg(Math.PI/4); // => 45
+   *
+   * @param {Number} rad ラジアン
+   * @return {Number} 度
    */
   Math.radToDeg = function(rad) {
     return rad * Math.RAD_TO_DEG;
@@ -1750,43 +2215,89 @@
 
   
   /**
+   * @static
    * @method clamp
-   * クランプ
+   * 指定した値を指定した範囲に収めた結果を返します。
+   *
+   * ### Example
+   *     Math.clamp(120, 0, 640); // => 120
+   *     Math.clamp(980, 0, 640); // => 640
+   *     Math.clamp(-80, 0, 640); // => 0
+   *
+   * @param {Number} value 値
+   * @param {Number} min  範囲の下限
+   * @param {Number} max  範囲の上限
+   * @return {Number} 丸めた結果の値
    */
   Math.$method("clamp", function(value, min, max) {
     return (value < min) ? min : ( (value > max) ? max : value );
   });
   
   /**
+   * @static
    * @method inside
-   * min <= value <= max のとき true を返す
+   * 指定した値が指定した値の範囲にあるかどうかを返します。
+   *
+   * ### Example
+   *     Math.inside(980, 0, 640); // => false
+   *     Math.inside(120, 0, 640); // => true
+   *
+   * @param {Number} value チェックする値
+   * @param {Number} min  範囲の下限
+   * @param {Number} max  範囲の上限
+   * @return {Boolean} 範囲内に値があるかないか
    */
   Math.$method("inside", function(value, min, max) {
     return (value >= min) && (value) <= max;
   });
   
   /**
+   * @static
    * @method randint
-   * ランダムな値を指定された範囲内で生成
+   * 指定された範囲内でランダムな整数値を生成します。
+   *
+   * ### Example
+   *     Math.randint(-4, 4); // => -4、0、3、4 など
+   *
+   * @param {Number} min  範囲の最小値
+   * @param {Number} max  範囲の最大値
+   * @return {Number} ランダムな整数値
    */
   Math.$method("randint", function(min, max) {
     return Math.floor( Math.random()*(max-min+1) ) + min;
   });
   
   /**
+   * @static
    * @method randfloat
-   * ランダムな値を指定された範囲内で生成
+   * 指定された範囲内でランダムな数値を生成します。
+   *
+   * ### Example
+   *     Math.randfloat(-4, 4); // => -2.7489193824000937 など
+   *
+   * @param {Number} min  範囲の最小値
+   * @param {Number} max  範囲の最大値
+   * @return {Number} ランダムな数値
    */
   Math.$method("randfloat", function(min, max) {
     return Math.random()*(max-min)+min;
   });
-  
+
   /**
+   * @static
    * @method randbool
-   * ランダムな値を指定された範囲内で生成
+   * ランダムに真偽値を生成します。
+   * 引数で百分率を指定する事もできます。
+   *
+   * ### Example
+   *     Math.randbool();   // => true または false
+   *     Math.randbool(80); // => 80% の確率で true
+   *
+   * @param {Number} percent  真になる百分率
+   * @return {Boolean} ランダムな真偽値
    */
-  Math.$method("randbool", function() {
-    return Math.randint(0, 1) === 1;
+  Math.$method("randbool", function(perecent) {
+    return Math.randint(0, 100) < (perecent || 50);
   });
     
 })();
@@ -1813,10 +2324,20 @@ var phina = phina || {};
    */
   phina.VERSION = '0.2.0';
 
+  /**
+   * @method isNode
+   * @member phina
+   * @static
+   */
   phina.$method('isNode', function() {
     return (typeof module !== 'undefined');
   });
 
+  /**
+   * @method namespace
+   * @member phina
+   * @static
+   */
   phina.$method('namespace', function(fn) {
     fn.call(this);
   });
@@ -1833,15 +2354,70 @@ var phina = phina || {};
     },
   });
 
+  
+  /**
+   * @method testUA
+   * UAを正規表現テスト
+   * @member phina
+   * @static
+   */
+  phina.$method('testUA', function(regExp) {
+    if (!phina.global.navigator) return false;
+    var ua = phina.global.navigator.userAgent;
+    return regExp.test(ua);
+  });
+
+  /**
+   * @method isAndroid
+   * Android かどうかをチェック
+   * @member phina
+   * @static
+   */
+  phina.$method('isAndroid', function() {
+    return phina.testUA(/Android/);
+  });
+  
+  /**
+   * @method isIPhone
+   * iPhone かどうかをチェック
+   * @member phina
+   * @static
+   */
+  phina.$method('isIPhone', function() {
+    return phina.testUA(/iPhone/);
+  });
+  
+  /**
+   * @method isIPad
+   * iPad かどうかをチェック
+   * @member phina
+   * @static
+   */
+  phina.$method('isIPad', function() {
+    return phina.testUA(/iPad/);
+  });
+  
+  /**
+   * @method isIOS
+   * iOS かどうかをチェック
+   * @member phina
+   * @static
+   */
+  phina.$method('isIOS', function() {
+    return phina.testUA(/iPhone|iPad/);
+  });
+
   /**
    * @method isMobile
    * mobile かどうかをチェック
+   * @member phina
+   * @static
    */
   phina.$method('isMobile', function() {
-    if (!phina.global.navigator) return false;
-    var ua = phina.global.navigator.userAgent;
-    return (ua.indexOf("iPhone") > 0 || ua.indexOf("iPad") > 0 || ua.indexOf("Android") > 0);
+    return phina.testUA(/iPhone|iPad|Android/);
   });
+  
+  
 
 
   // support node.js
@@ -1945,8 +2521,11 @@ phina.namespace(function() {
   });
 
   var chachedClasses = {};
-  /*
-   * 
+  
+  /**
+   * @method using
+   * @member phina
+   * @static
    */
   phina.$method('using', function(path) {
     if (!path) {
@@ -1963,8 +2542,11 @@ phina.namespace(function() {
     return current;
   });
   
-  /*
+  /**
+   * @method register
    * 
+   * @member phina
+   * @static
    */
   phina.$method('register', function(path, _class) {
     var pathes = path.split(/[,.\/ ]|::/);
@@ -2027,7 +2609,11 @@ phina.namespace(function() {
     return _class;
   });
 
-
+  /**
+   * @method globalize
+   * @member phina
+   * @static
+   */
   phina.$method('globalize', function() {
     phina.forIn(function(key, value) {
       var ns = key;
@@ -2100,7 +2686,8 @@ phina.namespace(function() {
 
   /**
    * @class phina.geom.Vector2
-   * ベクトルクラス
+   * # 2次元ベクトルクラス
+   * 2次元のベクトルや座標を表すクラスです。
    */
   phina.define('phina.geom.Vector2', {
 
@@ -2110,7 +2697,15 @@ phina.namespace(function() {
     y: 0,
 
     /**
-     * @constructor
+     * @method init
+     * 2次元ベクトルのコンストラクタです。
+     *
+     * ### Example
+     *     v = phina.geom.Vector2(3, 4);
+     *
+     * @param {Number} x ベクトルの x 座標
+     * @param {Number} y ベクトルの y 座標
+     * @return {phina.geom.Vector2} 2次元ベクトルオブジェクト
      */
     init: function(x, y) {
       this.x = x;
@@ -2118,22 +2713,48 @@ phina.namespace(function() {
     },
 
     /**
-     * 複製
+     * @method clone
+     * this のコピーを生成して返します。
+     *
+     * ### Example
+     *     v = phina.geom.Vector2(3, 4);
+     *     v2 = v.clone();
+     *     v2.x == v.x; // => true
+     *
+     * @return {Object} 生成したベクトル
      */
     clone: function() {
       return phina.geom.Vector2(this.x, this.y);
     },
 
     /**
-     * 等しいかどうかをチェック
-     * @return {Boolean}
+     * @method equals
+     * this の各要素がすべて other と等しいかどうかを返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v2 = phina.geom.Vector2(5, 6);
+     *     v1.equals(v2); // => false
+     *
+     * @param {phina.geom.Vector2} other 比較する対象のベクトル
+     * @return {Boolean} 等しいかどうか
      */
     equals: function(v) {
       return (this.x === v.x && this.y === v.y);
     },
 
     /**
-     * セッター
+     * @method set
+     * @chainable
+     * this の各要素の値を再設定します。
+     *
+     * ### Example
+     *     v = phina.geom.Vector2(3, 4);
+     *     v.set(5, 6);
+     *
+     * @param {Number} x ベクトルの x 座標
+     * @param {Number} y ベクトルの y 座標
+     * @return {phina.geom.Vector2} 再設定後のベクトル
      */
     set: function(x, y) {
       this.x = x;
@@ -2142,7 +2763,17 @@ phina.namespace(function() {
     },
 
     /**
-     * 加算
+     * @method add
+     * @chainable
+     * this に other を加えます。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v2 = phina.geom.Vector2(5, 6);
+     *     v1.add(v2); // => phina.geom.Vector(8, 10)
+     *
+     * @param {phina.geom.Vector2} other ベクトル
+     * @return {phina.geom.Vector2} 加算した結果のベクトル
      */
     add: function(v) {
       this.x += v.x;
@@ -2151,7 +2782,19 @@ phina.namespace(function() {
     },
 
     /**
-     * 減算
+     * @method sub
+     * @chainable
+     * this から other を減じます。
+     *
+     * ベクトルが座標を表す場合は、指定した座標から自分自身へと向かうベクトルが得られます。
+     * 
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v2 = phina.geom.Vector2(1, 5);
+     *     v1.sub(v2); // => phina.geom.Vector(2, -1)
+     *
+     * @param {phina.geom.Vector2} other ベクトル
+     * @return {phina.geom.Vector2} 減算した結果のベクトル
      */
     sub: function(v) {
       this.x -= v.x;
@@ -2160,7 +2803,16 @@ phina.namespace(function() {
     },
 
     /**
-     * 乗算
+     * @method mul
+     * @chainable
+     * this の各要素に数値 n を乗じます。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v1.mul(3) // => phina.geom.Vector(9, 12)
+     *
+     * @param {Number} n 乗じる値
+     * @return {phina.geom.Vector2} 乗算した結果のベクトル
      */
     mul: function(n) {
       this.x *= n;
@@ -2169,7 +2821,16 @@ phina.namespace(function() {
     },
 
     /**
-     * 除算
+     * @method div
+     * @chainable
+     * this の各要素を数値 n で割ります。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(8, 16);
+     *     v1.div(2) // => phina.geom.Vector(4, 8)
+     *
+     * @param {Number} n 割る値
+     * @return {phina.geom.Vector2} 除算した結果のベクトル
      */
     div: function(n) {
       //console.assert(n != 0, "0 division!!");
@@ -2180,7 +2841,17 @@ phina.namespace(function() {
     },
 
     /**
-     * 反転
+     * @method negate
+     * @chainable
+     * this の各要素の正負を反転します。
+     *
+     * this と同じ大きさで方向が逆のベクトルが得られます。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, -4);
+     *     v1.negate() // => phina.geom.Vector(-3, 4)
+     *
+     * @return {phina.geom.Vector2} 反転後のベクトル
      */
     negate: function() {
       this.x = -this.x;
@@ -2190,58 +2861,118 @@ phina.namespace(function() {
     },
 
     /**
-     * @method
-     * 内積.
-     * 投影ベクトルを求めたり, 類似度に使ったり.
+     * @method dot
+     * other との内積を返します。
+     *
+     * 投影ベクトルを求めたり、類似度の計算に利用することができます。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v2 = phina.geom.Vector2(-2, 2);
+     *     v1.dot(v2) // => 2
+     *
+     * @param {phina.geom.Vector2} other ベクトル
+     * @return {Number} 内積
      */
     dot: function(v) {
       return this.x * v.x + this.y * v.y;
     },
 
     /**
-     * @method
-     * 外積
+     * @method cross
+     * other との外積（クロス積）を返します。
+     *
+     * 2次元ベクトルでの外積はベクトルでなく数値を返すことに注意してください。
+     * other より this 時計回りにあるときは正の値になり、反時計回りにあるときは負の値になります。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v2 = phina.geom.Vector2(3, 1);
+     *     v1.cross(v2) // => -8
+     *
+     * @param {phina.geom.Vector2} other ベクトル
+     * @return {Number} 外積
      */
     cross: function(v) {
       return (this.x*v.y) - (this.y*v.x);
     },
 
     /**
-     * 長さを取得
-     * ### memo
-     * magnitude って名前の方が良いかも. 検討中.
-     * @return {Number}
+     * @method length
+     * this の大きさを返します。
+     *
+     * (memo) magnitude って名前の方が良いかも. 検討中.
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v1.length(); // => 5
+     *
+     * @return {Number} ベクトルの大きさ
      */
     length: function() {
       return Math.sqrt(this.x*this.x + this.y*this.y);
     },
     
     /**
-     * 2乗された長さを取得
-     * C# の名前を引用
-     * or lengthSquare or lengthSqrt
-     * @return {Number}
+     * @method lengthSquared
+     * this の大きさの自乗を返します。
+     *
+     * C# の名前を引用（or lengthSquare or lengthSqrt）
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v1.lengthSquared(); // => 25
+     *
+     * @return {Number} ベクトルの大きさの自乗
      */
     lengthSquared: function() {
       return this.x*this.x + this.y*this.y;
     },
     
     /**
-     * ２点間の距離を返す
+     * @method distance
+     * this と other を座標とみなしたときの2点間の距離を返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(1, 2);
+     *     v2 = phina.geom.Vector2(4, 6);
+     *     v1.distance(v2); // => 5
+     *
+     * @param {phina.geom.Vector2} other 座標を表すベクトル
+     * @return {Number} 2点間の距離
      */
     distance: function(v) {
       return Math.sqrt( Math.pow(this.x-v.x, 2) + Math.pow(this.y-v.y, 2) );
     },
     
     /**
-     * ２点間の距離を返す
+     * @method distanceSquared
+     * this と other を座標とみなしたときの2点間の距離の自乗を返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(1, 2);
+     *     v2 = phina.geom.Vector2(4, 6);
+     *     v1.distanceSquared(v2); // => 25
+     *
+     * @param {phina.geom.Vector2} other 座標を表すベクトル
+     * @return {Number} 2点間の距離の自乗
      */
     distanceSquared: function(v) {
       return Math.pow(this.x-v.x, 2) + Math.pow(this.y-v.y, 2);
     },
 
     /**
-     * ランダムベクトルをセット
+     * @method random
+     * @chainable
+     * 角度が min から max の範囲（度単位）で大きさが len のランダムなベクトルを返します。
+     *
+     * ### Example
+     *     phina.geom.Vector2().random(90, 180, 1); // => phina.geom.Vector2(-0.5, 0.866) など
+     *
+     * @param {Number} [min=0] 角度（度単位）の下限値
+     * @param {Number} [max=360] 角度（度単位）の上限値
+     * @param {Number} [len=1] 大きさ
+     * @return {phina.geom.Vector2} ランダム化したベクトル
      */
     random: function(min, max, len) {
       var degree = phina.util.Random.randfloat(min || 0, max || 360);
@@ -2255,7 +2986,15 @@ phina.namespace(function() {
     },
     
     /**
-     * 正規化
+     * @method normalize
+     * @chainable
+     * this を正規化します。すなわち、this と同じ方向で大きさが1のベクトルを返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v1.normalize(); // => phina.geom.Vector2(0.6, 0.8)
+     *
+     * @return {phina.geom.Vector2} 正規化したベクトル
      */
     normalize: function() {
       this.div(this.length());
@@ -2263,16 +3002,28 @@ phina.namespace(function() {
     },
 
     /**
-     * 文字列に変換
-     * @return {String}
+     * @method toString
+     * this を JSON 形式で表現した文字列を返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v1.toString(); // => "{x:3, y:4}"
+     *
+     * @return {String} JSON 文字列
      */
     toString: function() {
       return "{x:{x}, y:{y}}".format(this);
     },
 
     /**
-     * 大体の向きを文字列で取得
-     * @return {String}
+     * @method getDirection
+     * this のおおよその方向を示した文字列を返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 4);
+     *     v1.getDirection(); // => "up"
+     *
+     * @return {String} 方向を表す文字列（"up", "right", "down", "left"）
      */
     getDirection: function() {
       var angle = this.toDegree();
@@ -2290,8 +3041,14 @@ phina.namespace(function() {
     },
 
     /**
-     * 角度に変換
-     * @return {Number}
+     * @method toAngle
+     * this と x 軸との角度（ラジアン単位）を返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(-2, 0);
+     *     v1.toAngle(); // => 3.14159
+     *
+     * @return {Number} ベクトルの角度（ラジアン単位）
      */
     toAngle: function() {
       var rad = Math.atan2(this.y, this.x);
@@ -2299,7 +3056,16 @@ phina.namespace(function() {
     },
     
     /**
-     * 角度(radian)と長さでベクトルをセット
+     * @method fromAngle
+     * @chainable
+     * 角度（ラジアン単位）と大きさを指定してベクトルを設定します。
+     *
+     * ### Example
+     *     phina.geom.Vector2().fromAngle(Math.PI/4, 2); // => phina.geom.Vector2(1.4142, 1.4142)
+     *
+     * @param {Number} rad 角度（ラジアン単位）
+     * @param {Number} [len=1] 大きさ
+     * @return {phina.geom.Vector2} ベクトル
      */
     fromAngle: function(rad, len) {
       len = len || 1;
@@ -2310,22 +3076,47 @@ phina.namespace(function() {
     },
 
     /**
-     * 角度に変換(degree)
-     * @return {Number}
+     * @method toDegree
+     * this と x 軸との角度（度単位）を返します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(-2, 2);
+     *     v1.toAngle(); // => 135
+     *
+     * @return {Number} ベクトルの角度（度単位）
      */
     toDegree: function() {
       return this.toAngle().toDegree();
     },
     
     /**
-     * 角度(degree)と長さでベクトルをセット
+     * @method fromDegree
+     * @chainable
+     * 角度（度単位）と大きさを指定してベクトルを設定します。
+     *
+     * ### Example
+     *     phina.geom.Vector2().fromDegree(60, 2); // => phina.geom.Vector2(1, 1.732)
+     *
+     * @param {Number} deg 角度（度単位）
+     * @param {Number} [len=1] 大きさ
+     * @return {phina.geom.Vector2} ベクトル
      */
     fromDegree: function(deg, len) {
       return this.fromAngle(deg.toRadian(), len);
     },
 
     /**
-     * 任意の角度(radian)で回転
+     * @method rotate
+     * @chainable
+     * this を回転します。
+     *
+     * ### Example
+     *     v1 = phina.geom.Vector2(3, 1);
+     *     v1.rotate(Math.PI/2); // => phina.geom.Vector2(-1, 3);
+     *
+     * @param {Number} rad 角度（ラジアン単位）
+     * @param {Number} [center=(0, 0)] 回転の中心座標
+     * @return {Number} 回転後のベクトル
      */
     rotate: function(rad, center) {
       center = center || phina.geom.Vector2(0, 0);
@@ -2344,9 +3135,18 @@ phina.namespace(function() {
 
     _static: {
       /**
-       * @method
+       * @method min
        * @static
-       * min
+       * v1 と v2 の各要素に対し、より小さい方を要素とする新しいベクトルを生成して返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     v2 = phina.geom.Vector2(-3, 2);
+       *     phina.geom.Vector2.min(v1, v2); // phina.geom.Vector2(-3, 1);
+       *
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @return {phina.geom.Vector2} 生成したベクトル
        */
       min: function(a, b) {
         return phina.geom.Vector2(
@@ -2356,9 +3156,18 @@ phina.namespace(function() {
       },
 
       /**
-       * @method
+       * @method max
        * @static
-       * max
+       * 2次元ベクトル v1 と v2 の各要素に対し、より大きい方を要素とする新しいベクトルを生成して返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     v2 = phina.geom.Vector2(-3, 2);
+       *     phina.geom.Vector2.max(v1, v2); // phina.geom.Vector2(3, 2);
+       *
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @return {phina.geom.Vector2} 生成したベクトル
        */
       max: function(a, b) {
         return phina.geom.Vector2(
@@ -2368,96 +3177,199 @@ phina.namespace(function() {
       },
 
       /**
-       * @method
+       * @method add
        * @static
-       * 加算
+       * v1 に v2 を加算した新しいベクトルを生成して返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     v2 = phina.geom.Vector2(-3, 2);
+       *     phina.geom.Vector2.add(v1, v2); // phina.geom.Vector2(0, 3);
+       *
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @return {phina.geom.Vector2} 加算した結果
        */
       add: function(lhs, rhs) {
         return phina.geom.Vector2(lhs.x+rhs.x, lhs.y+rhs.y);
       },
       
       /**
-       * @method
+       * @method sub
        * @static
-       * 減算
+       * 2次元ベクトル v1 から v2 を減じた新しいベクトルを生成して返します。
+       *
+       * ベクトルが座標を表す場合、2つ目の座標から1つ目の座標へと向かうベクトルが得られます。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     v2 = phina.geom.Vector2(-3, 2);
+       *     phina.geom.Vector2.sub(v1, v2); // phina.geom.Vector2(6, -1);
+       *
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @return {phina.geom.Vector2} 減算した結果
        */
       sub: function(lhs, rhs) {
         return phina.geom.Vector2(lhs.x-rhs.x, lhs.y-rhs.y);
       },
       
       /**
-       * @method
+       * @method mul
        * @static
-       * 乗算
+       * 2次元ベクトル v の各要素に n を乗じた新しいベクトルを生成して返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     phina.geom.Vector2.mul(v1, 2); // phina.geom.Vector2(6, 2)
+       *
+       * @param {phina.geom.Vector2} v ベクトル
+       * @param {phina.geom.Vector2} n 乗じる値
+       * @return {phina.geom.Vector2} 乗算した結果
        */
       mul: function(v, n) {
         return phina.geom.Vector2(v.x*n, v.y*n);
       },
       
       /**
-       * @method
+       * @method div
        * @static
-       * 割算
+       * 2次元ベクトル v の各要素を n で割った新しいベクトルを生成して返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     phina.geom.Vector2.div(v1, 2); // phina.geom.Vector2(1.5, 0.5)
+       *
+       * @param {phina.geom.Vector2} v ベクトル
+       * @param {phina.geom.Vector2} n 割る値
+       * @return {phina.geom.Vector2} 除算した結果
        */
       div: function(v, n) {
         return phina.geom.Vector2(v.x/n, v.y/n);
       },
       
       /**
-       * @method
+       * @method negate
        * @static
-       * 反転
+       * 2次元ベクトル v を反転した新しいベクトルを生成して返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 1);
+       *     phina.geom.Vector2.negate(); // phina.geom.Vector2(-3, -1)
+       *
+       * @param {phina.geom.Vector2} v ベクトル
+       * @return {phina.geom.Vector2} 反転したベクトル
        */
       negate: function(v) {
         return phina.geom.Vector2(-v.x, -v.y);
       },
       
       /**
-       * @method
+       * @method dot
        * @static
-       * 内積.
-       * 投影ベクトルを求めたり, 類似度に使ったり.
+       * 2次元ベクトル v1 と v2 の内積を返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 4);
+       *     v2 = phina.geom.Vector2(-2, 2);
+       *     phina.geom.Vector2.dot(v1, v2) // => 2
+       *
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @return {phina.geom.Vector2} 内積
        */
       dot: function(lhs, rhs) {
         return lhs.x * rhs.x + lhs.y * rhs.y;
       },
       
       /**
-       * @method
+       * @method cross
        * @static
-       * 外積
+       * 2次元ベクトル v1 と v2 の外積（クロス積）を返します。
+       *
+       * 2次元ベクトルでの外積はベクトルでなく数値を返すことに注意してください。
+       * 1つ目のベクトルが2つ目のベクトルより時計回りにあるときは正の値になり、反時計回りにあるときは負の値になります。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(3, 4);
+       *     v2 = phina.geom.Vector2(3, 1);
+       *     phina.geom.Vector2.cross(v1, v2); // => -8
+       *
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @return {Number} 外積
        */
       cross: function(lhs, rhs) {
         return (lhs.x*rhs.y) - (lhs.y*rhs.x);
       },
       
       /**
-       * @method
+       * @method distance
        * @static
-       * ２点間の距離を返す
+       * v1 と v2 を座標とみなしたときの2点間の距離を返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(1, 2);
+       *     v2 = phina.geom.Vector2(4, 6);
+       *     phina.geom.Vector2.distance(v1, v2); // => 5
+       *
+       * @param {phina.geom.Vector2} v1 座標を表すベクトル
+       * @param {phina.geom.Vector2} v2 座標を表すベクトル
+       * @return {Number} 2点間の距離
        */
       distance: function(lhs, rhs) {
         return Math.sqrt( Math.pow(lhs.x-rhs.x, 2) + Math.pow(lhs.y-rhs.y, 2) );
       },
 
+      /**
+       * @method distanceSquared
+       * @static
+       * v1 と v2 を座標とみなしたときの2点間の距離の自乗を返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(1, 2);
+       *     v2 = phina.geom.Vector2(4, 6);
+       *     phina.geom.Vector2.distanceSquared(v1, v2); // => 25
+       *
+       * @param {phina.geom.Vector2} v1 座標を表すベクトル
+       * @param {phina.geom.Vector2} v2 座標を表すベクトル
+       * @return {Number} 2点間の距離の自乗
+       */
       distanceSquared: function(lhs, rhs) {
         return Math.pow(lhs.x-rhs.x, 2) + Math.pow(lhs.y-rhs.y, 2);
       },
 
-
       /**
-       * @method
+       * @method manhattanDistance
        * @static
-       * マンハッタン距離
+       * v1 と v2 を座標とみなしたときの2点間のマンハッタン距離（軸に平行に進むときの最短距離）を返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(1, 2);
+       *     v2 = phina.geom.Vector2(4, 6);
+       *     phina.geom.Vector2.manhattanDistance(v1, v2); // => 7
+       *
+       * @param {phina.geom.Vector2} v1 座標を表すベクトル
+       * @param {phina.geom.Vector2} v2 座標を表すベクトル
+       * @return {Number} 2点間のマンハッタン距離
        */
       manhattanDistance: function(lhs, rhs) {
         return Math.abs(lhs.x-rhs.x) + Math.abs(lhs.y-rhs.y);
       },
       
       /**
-       * @method
+       * @method normal
        * @static
-       * 法線ベクトル
+       * v1 と v2 を座標とみなしたときの、v2 から v1 に向かうベクトルに対する法線ベクトルを返します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(1, 2);
+       *     v2 = phina.geom.Vector2(4, 6);
+       *     phina.geom.Vector2.normal(v1, v2); // => phina.geom.Vector2(4, -3)
+       *
+       * @param {phina.geom.Vector2} v1 座標を表すベクトル
+       * @param {phina.geom.Vector2} v2 座標を表すベクトル
+       * @return {phina.geom.Vector2} 法線ベクトル
        */
       normal: function(a, b) {
         var temp = phina.geom.Vector2.sub(a, b);
@@ -2466,9 +3378,20 @@ phina.namespace(function() {
       },
 
       /**
-       * @method
+       * @method reflect
        * @static
-       * 反射ベクトル
+       * 2次元ベクトル v を壁への入射ベクトルとして、壁に反射した際のベクトル（反射ベクトル）を返します。
+       *
+       * 壁の向きは法線ベクトル normal によって表します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(4, 3);
+       *     normal = phina.geom.Vector2(-1, 1);
+       *     phina.geom.Vector2.reflect(v1, normal); // => phina.geom.Vector2(2, 5)
+       *
+       * @param {phina.geom.Vector2} v 入射ベクトル
+       * @param {phina.geom.Vector2} normal 壁の法線ベクトル
+       * @return {phina.geom.Vector2} 反射ベクトル
        */
       reflect: function(v, normal) {
         var len = phina.geom.Vector2.dot(v, normal);
@@ -2476,32 +3399,79 @@ phina.namespace(function() {
         
         return phina.geom.Vector2.sub(v, temp);
       },
-
+      
       /**
-       * @method
+       * @method wall
        * @static
-       * 補間.
-       * 0.5 で lhs と rhs の中間ベクトルを求めることができます.
+       * 2次元ベクトル v を壁への入射ベクトルとして、壁に沿ったベクトル（壁ずりクトル）を返します。
+       *
+       * 壁の向きは法線ベクトル normal によって表します。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(4, 3);
+       *     normal = phina.geom.Vector2(-1, 1);
+       *     phina.geom.Vector2.wall(v1, normal); // => phina.geom.Vector2(3, 4)
+       *
+       * @param {phina.geom.Vector2} v 入射ベクトル
+       * @param {phina.geom.Vector2} normal 壁の法線ベクトル
+       * @return {phina.geom.Vector2} 壁ずりベクトル
        */
-      lerp: function(lhs, rhs, t) {
-        // TODO: 
+      wall: function(v, normal) {
+        var len = phina.geom.Vector2.dot(v, normal);
+        var temp= phina.geom.Vector2.mul(normal, len);
+        
+        return phina.geom.Vector2.sub(v, temp);
+      },
+      
+      /**
+       * @method lerp
+       * @static
+       * v1 と v2 を媒介変数 t で線形補間します。
+       * t=0.5 で v1 と v2 の中間ベクトルを求めることができます。
+       *
+       * ### Example
+       *     v1 = phina.geom.Vector2(1, 2);
+       *     v2 = phina.geom.Vector2(4, 6);
+       *     phina.geom.Vector2.lerp(v1, v2, 0.5); // => (2.5, 4)
+       *     phina.geom.Vector2.lerp(v1, v2, 0); // => (1, 2)
+       *     phina.geom.Vector2.lerp(v1, v2, 1); // => (4, 6)
+       * 
+       * @param {phina.geom.Vector2} v1 ベクトル
+       * @param {phina.geom.Vector2} v2 ベクトル
+       * @param {Number} t 媒介変数
+       * @return {phina.geom.Vector2} 線形補間の結果
+       */
+      lerp: function(a, b, t) {
         return phina.geom.Vector2(
-          lhs.x + (rhs.x-lhs.x)*t,
-          lhs.y + (rhs.y-lhs.y)*t
+          a.x + (b.x-a.x)*t,
+          a.y + (b.y-a.y)*t
         );
       },
       
       
       /**
-       * @method
+       * @method slerp
        * @static
-       * 補間
+       * 補間（未実装）
        */
       slerp: function(lhs, rhs, t) {
           // TODO:
           // cos...
       },
 
+      /**
+       * @method random
+       * @static
+       * 角度が min から max の範囲（度単位）で大きさが len のランダムなベクトルを生成して返します。
+       *
+       * ### Example
+       *     phina.geom.Vector2.random(90, 180, 1); // => phina.geom.Vector2(-0.5, 0.866) など
+       *
+       * @param {Number} [min=0] 角度（度単位）の下限値
+       * @param {Number} [max=360] 角度（度単位）の上限値
+       * @param {Number} [len=1] 大きさ
+       * @return {phina.geom.Vector2} 生成したベクトル
+       */
       random: function(min, max, len) {
         return phina.geom.Vector2().random(min, max).mul(len||1);
       },
@@ -2509,10 +3479,30 @@ phina.namespace(function() {
 
   });
 
+  /**
+   * @property {phina.geom.Vector2} ZERO ゼロベクトル
+   * @readonly
+   */
   phina.geom.Vector2.ZERO = phina.geom.Vector2(0, 0);
+  /**
+   * @property {phina.geom.Vector2} LEFT 左方向の単位ベクトル
+   * @readonly
+   */
   phina.geom.Vector2.LEFT = phina.geom.Vector2(-1, 0);
+  /**
+   * @property {phina.geom.Vector2} RIGHT 右方向の単位ベクトル
+   * @readonly
+   */
   phina.geom.Vector2.RIGHT= phina.geom.Vector2(1, 0);
+  /**
+   * @property {phina.geom.Vector2} UP 上方向の単位ベクトル
+   * @readonly
+   */
   phina.geom.Vector2.UP   = phina.geom.Vector2(0, -1);
+  /**
+   * @property {phina.geom.Vector2} DOWN 下方向の単位ベクトル
+   * @readonly
+   */
   phina.geom.Vector2.DOWN = phina.geom.Vector2(0, 1);
 
 });
@@ -2522,7 +3512,8 @@ phina.namespace(function() {
 
   /**
    * @class phina.geom.Vector3
-   * ベクトルクラス
+   * # 3次元ベクトルクラス（未実装）
+   * 3次元のベクトルや座標を表すクラスです。
    */
   phina.define('phina.geom.Vector3', {
 
@@ -2551,15 +3542,32 @@ phina.namespace(function() {
 
   /**
    * @class phina.geom.Matrix33
-   * マトリックスクラス
+   * # 行列クラス
+   * 3x3の行列を表すクラスです。
+   * 
+   * <pre>
+   * | m00 m01 m02 |
+   * | m10 m11 m12 |
+   * | m20 m21 m22 |
+   * </pre>
    */
   phina.define('phina.geom.Matrix33', {
 
     /**
-     * @constructor
-     * m00 m01 m02
-     * m10 m11 m12
-     * m20 m21 m22
+     * @method init
+     * マトリックスクラスのコンストラクタです。
+     *
+     * 引数は m00, m01, m02, m10, m11, m12, m20, m21, m22 の順に指定します。
+     * 引数が9個に満たない場合は単位行列を生成します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat2 = phina.geom.Matrix33();
+     *     mat1.m00 + mat2.m00; // => 2
+     *     mat1.m01 - mat2.m01; // => 2
+     *
+     * @param {Number...} m00, m01,... 各要素の値
+     * @return {phina.geom.Matrix33} 行列オブジェクト
      */
     init: function() {
       if (arguments.length >= 9) {
@@ -2570,6 +3578,20 @@ phina.namespace(function() {
       }
     },
 
+    /**
+     * @method set
+     * @chainable
+     * this の各要素の値を再設定します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat2 = phina.geom.Matrix33();
+     *     mat2.set(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat1.toString() == mat2.toString(); // => true
+     *
+     * @param {Number...} m00, m01,... 各要素の値
+     * @return {phina.geom.Matrix33} 行列オブジェクト
+     */
     set: function(m00, m01, m02, m10, m11, m12, m20, m21, m22) {
       this.m00 = m00; this.m01 = m01; this.m02 = m02;
       this.m10 = m10; this.m11 = m11; this.m12 = m12;
@@ -2578,6 +3600,18 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method identity
+     * @chainable
+     * this を単位行列にします。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat2 = phina.geom.Matrix33();
+     *     mat1.identity().toString() == mat2.toString(); // => true
+     *
+     * @return {phina.geom.Matrix33} 単位行列
+     */
     identity: function() {
       this.m00 = 1; this.m01 = 0; this.m02 = 0;
       this.m10 = 0; this.m11 = 1; this.m12 = 0;
@@ -2586,7 +3620,16 @@ phina.namespace(function() {
     },
 
     /**
-     * クローン
+     * @method clone
+     * this のコピーを生成して返します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat2 = mat1.clone();
+     *     mat1.toString() == mat2.toString(); // => true
+     *     mat1 == mat2; // => false
+     *
+     * @return {phina.geom.Matrix33} 行列オブジェクト
      */
     clone: function() {
       return phina.geom.Matrix33(
@@ -2597,7 +3640,15 @@ phina.namespace(function() {
     },
 
     /**
-     * 行列式
+     * @method determinant
+     * 行列式を返します
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(0, -2, 0, -1, 3, 1, 4, 2, 1);
+     *     mat1.determinant(); // => -10
+     *     mat1.identity().determinant(); // => 1
+     *
+     * @return {Number} 行列式
      */
     determinant: function() {
       var m00 = this.m00; var m01 = this.m01; var m02 = this.m02;
@@ -2608,7 +3659,16 @@ phina.namespace(function() {
     },
 
     /**
-     * 転置
+     * @method transpose
+     * @chainable
+     * 転置行列を返します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat2 = phina.geom.Matrix33(1, 4, 7, 2, 5, 8, 3, 6, 9);
+     *     mat1.transpose().toString() == mat2.toString(); // => true
+     *
+     * @return {phina.geom.Matrix33} 転置行列
      */
     transpose: function() {
       var swap = function(a, b) {
@@ -2625,7 +3685,17 @@ phina.namespace(function() {
     },
 
     /**
-     * 逆行列
+     * @method invert
+     * @chainable
+     * 逆行列を返します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(0, -1, 1, -1, 4, -2, 1, 1, 1);
+     *     mat2 = mat1.clone().invert();
+     *     mat3 = mat1.clone().multiply(mat2);
+     *     mat3.toString() == phina.geom.Matrix33.IDENTITY.toString(); // => true
+     *
+     * @return {phina.geom.Matrix33} 逆行列
      */
     invert: function() {
       var m00 = this.m00; var m01 = this.m01; var m02 = this.m02;
@@ -2656,7 +3726,17 @@ phina.namespace(function() {
     },
 
     /**
-     * 掛け算
+     * @method multiply
+     * this に other を乗じます。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(0, -1, 1, -1, 4, -2, 1, 1, 1);
+     *     mat2 = mat1.clone().invert();
+     *     mat3 = mat1.clone().multiply(mat2);
+     *     mat3.toString() == phina.geom.Matrix33.IDENTITY.toString(); // => true
+     *
+     * @param {phina.geom.Matrix33} other 乗じる行列
+     * @return {phina.geom.Matrix33} 乗算結果の行列
      */
     multiply: function(mat) {
         var tm = this.m;
@@ -2685,7 +3765,17 @@ phina.namespace(function() {
     },
 
     /**
-     * ベクトルとの掛け算
+     * @method multiplyVector2
+     * this に2次元ベクトル v を乗じます。
+     * 2次元ベクトルは (x, y, 1) として乗算します。
+     *
+     * ### Example
+     *     mat = phina.geom.Matrix33(0, -1, 1, -1, 4, -2, 1, 1, 1);
+     *     v = phina.geom.Vector2(2, 4)
+     *     mat.multiplyVector2(v) // => {x: -3, y: 12}
+     *
+     * @param {phina.geom.Vector2} v 乗じるベクトル
+     * @return {phina.geom.Vector2} 乗算結果のベクトル
      */
     multiplyVector2: function(v) {
       var vx = this.m00*v.x + this.m01*v.y + this.m02;
@@ -2695,6 +3785,19 @@ phina.namespace(function() {
     },
 
     // 行
+    /**
+     * @method getRow
+     * row 番目の行を配列で返します。row が 0、1、2 のいずれかでなければ null を返します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat1.getRow(0); // [1, 2, 3]
+     *     mat1.getRow(1); // [4, 5, 6]
+     *     mat1.getRow(9); // null
+     *
+     * @param {0/1/2} row 行番号
+     * @return {Number[]} 行を表す配列
+     */
     getRow: function(row) {
       if ( row === 0 ) {
         return [ this.m00, this.m01, this.m02 ];
@@ -2710,7 +3813,19 @@ phina.namespace(function() {
       }
     },
 
-    // 列
+    /**
+     * @method getCol
+     * col 番目の列を配列で返します。col が 0、1、2 のいずれかでなければ null を返します。
+     *
+     * ### Example
+     *     mat1 = phina.geom.Matrix33(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     *     mat1.getCol(0); // [1, 4, 7]
+     *     mat1.getCol(1); // [2, 5, 8]
+     *     mat1.getRow(-1); // null
+     *
+     * @param {0/1/2} col 列番号
+     * @return {Number[]} 列を表す配列
+     */
     getCol: function(col) {
       if ( col === 0 ) {
         return [ this.m00, this.m10, this.m20 ];
@@ -2725,26 +3840,28 @@ phina.namespace(function() {
         return null;
       }
     },
+
     /**
-     * 文字列化
+     * @method toString
+     * 行列を JSON 形式で表現した文字列を返します。
+     *
+     * ### Example
+     *     v = phina.geom.Vector2(3, 4);
+     *     v2 = v.clone();
+     *     v2.x == v.x; // => true
+     *
+     * @return {String} JSON 文字列
      */
     toString: function() {
       return "|{m00}, {m01}, {m02}|\n|{m10}, {m11}, {m12}|\n|{m20}, {m21}, {m22}|".format(this);
     },
 
-    _accessor: {
-      /**
-       * x
-       */
-      x: {
-        "get": function()   { return this._x; },
-        "set": function(v)  { this._x = v; }
-      },
-    }
-    
   });
 
-
+  /**
+   * @property {phina.geom.Matrix33} IDENTITY 単位行列
+   * @readonly
+   */
   phina.geom.Matrix33.IDENTITY = phina.geom.Matrix33().identity();
 
 });
@@ -2754,23 +3871,64 @@ phina.namespace(function() {
 
   /**
    * @class phina.geom.Rect
+   * # 矩形領域を表すクラス
+   * キャンバス上の矩形領域を扱うクラスです。
    * 
    */
   phina.define('phina.geom.Rect', {
 
-    /** x */
+    /**
+     * @property {Number} x
+     * 矩形の左上頂点の x 座標
+     */
     x: 0,
-    /** y */
+    /**
+     * @property {Number} y
+     * 矩形の左上頂点の y 座標
+     */
     y: 0,
-    /** 幅 */
+    /**
+     * @property {Number} width
+     * 矩形の幅
+     */
     width: 32,
-    /** 高さ */
+    /**
+     * @property {Number} hight
+     * 矩形の高さ
+     */
     height: 32,
 
+    /**
+     * @method init
+     * 矩形領域のコンストラクタです。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(8, 16, 32, 64);
+     *
+     * @param {Number} x 矩形の左上頂点の x 座標
+     * @param {Number} y 矩形の左上頂点の y 座標
+     * @param {Number} width 幅
+     * @param {Number} height 高さ
+     * @return {phina.geom.Rect} 矩形領域オブジェクト
+     */
     init: function(x, y, width, height) {
       this.set(x, y, width, height);
     },
 
+    /**
+     * @method set
+     * @chainable
+     * this の各値を再設定します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(8, 16, 32, 64);
+     *     rect.set(0, 16, 32, 64);
+     *
+     * @param {Number} x 矩形の左上頂点の x 座標
+     * @param {Number} y 矩形の左上頂点の y 座標
+     * @param {Number} width 幅
+     * @param {Number} height 高さ
+     */
     set: function(x, y, width, height) {
       this.x = x;
       this.y = y;
@@ -2780,24 +3938,88 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method moveTo
+     * @chainable
+     * 矩形領域を座標 (x, y) に移動します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(8, 16, 32, 64);
+     *     rect.centerX; // => 24
+     *     rect.moveTo(0, 0);
+     *     rect.centerX; // => 16
+     *
+     * @param {Number} x 移動先の x 座標
+     * @param {Number} y 移動先の y 座標
+     */
     moveTo: function(x, y) {
       this.x = x;
       this.y = y;
       return this;
     },
 
+    /**
+     * @method moveBy
+     * @chainable
+     * 矩形領域を (x, y) だけ移動します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(8, 16, 32, 64);
+     *     rect.moveBy(10, -10);
+     *     rect.x; // => 18
+     *     rect.y; // => 6
+     *
+     * @param {Number} x 移動量の x 座標
+     * @param {Number} y 移動量の y 座標
+     */
     moveBy: function(x, y) {
       this.x += x;
       this.y += y;
       return this;
     },
 
+    /**
+     * @method setSizse
+     * @chainable
+     * 矩形領域の幅と高さを変更します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(8, 16, 32, 64);
+     *     rect.setSize(10, 20);
+     *     rect.width; // => 10
+     *     rect.height; // => 20
+     *
+     * @param {Number} width 幅
+     * @param {Number} height 高さ
+     */
     setSize: function(w, h) {
       this.width = w;
       this.height = h;
       return this;
     },
 
+    /**
+     * @method padding
+     * @chainable
+     * 矩形領域の中にパディング領域を設定します。
+     *
+     * 矩形領域自体のサイズはパディング領域の分だけ小さくなります。  
+     * 幅の指定方法は CSS の padding 指定と同じように時計回りです。  
+     * 引数が1つの場合は上下左右の値、引数が2つの場合は上下と左右の値、引数が３つの場合は上、左右、下の値と解釈します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(50, 100, 150, 200);
+     *     rect.padding(10);
+     *     rect.x; // => 60
+     *     rect.y; // => 110
+     *     rect.width; // => 130
+     *     rect.height; // => 180
+     *
+     * @param {Number} top 上辺のパディング幅
+     * @param {Number} right 右辺のパディング幅
+     * @param {Number} bottom 下辺のパディング幅
+     * @param {Number} left 左辺のパディング幅
+     */
     padding: function(top, right, bottom, left) {
       // css の padding に合わせて時計回りにパラメータ調整
       switch (arguments.length) {
@@ -2823,21 +4045,65 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method contains
+     * 座標 (x, y) が 矩形領域の中に含まれるかどうかを返します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(50, 100, 150, 200);
+     *     rect.contains(35, 68); // =>  true
+     *     rect.contains(200, 68); // => false
+     *
+     * @param {Number} x 判定する対象の x 座標
+     * @param {Number} y 判定する対象の y 座標
+     * @return {Boolean} 指定した座標が矩形領域の中に含まれるかどうか
+     */
     contains: function(x, y) {
       return this.left <= x && x <= this.right && this.top <= y && y <= this.bottom;
     },
 
+    /**
+     * @method clone
+     * this のコピーを生成して返します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(50, 100, 150, 200);
+     *     rect2 = rect.clone();
+     *     rect2.x == rect.x; // => true
+     *
+     * @return {Object} 生成した矩形領域
+     */
     clone: function() {
       return phina.geom.Rect(this.x, this.y, this.width, this.height);
     },
 
+    /**
+     * @method toCircle
+     * 矩形領域内に収まる最大の円領域を生成して返します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(32, 64, 100, 200);
+     *     circle = rect.toCircle();
+     *     circle.x; // => 82
+     *     circle.y; // => 164
+     *     circle.radius; // => 50
+     *
+     * @return {Object} 生成した円領域
+     */
     toCircle: function() {
       var radius = ((this.width < this.height) ? this.width : this.height)/2;
       return phina.geom.Circle(this.centerX, this.centerY, radius);
     },
 
     /**
-     * 配列に変換
+     * @method toArray
+     * this の各値を要素とする配列を生成して返します。
+     *
+     * ### Example
+     *     rect = phina.geom.Rect(32, 64, 100, 200);
+     *     rect.toArray(); // => [32, 64, 100, 200]
+     *
+     * @return {Number[]} 生成した配列
      */
     toArray: function() {
       return [this.x, this.y, this.width, this.height];
@@ -2846,32 +4112,49 @@ phina.namespace(function() {
     _accessor: {
       
       /**
-       * @property  left
-       * left
+       * @property {Number} left
+       * キャンバス左端から矩形領域の左辺までの距離
+       *
+       * left を変更すると矩形領域の幅（width）が自動的に調整されます。
+       *
+       * ### Example
+       *     rect = phina.geom.Rect(32, 64, 100, 200);
+       *     rect.left; // => 32
+       *     rect.width; // => 100
+       *     rect.right; // => 132
+       *     
+       *     rect.left = 42;
+       *     rect.width; // => 90
        */
       left: {
         "get": function()   { return this.x; },
         "set": function(v)  { this.width -= v-this.x; this.x = v; }
       },
       /**
-       * @property  top
-       * top
+       * @property {Number} top
+       * キャンバス上端から矩形領域の上辺までの位置
+       *
+       * top を変更すると矩形領域の高さ（height）が自動的に調整されます。
        */
       top: {
         "get": function()   { return this.y; },
         "set": function(v)  { this.height -= v-this.y; this.y = v; }
       },
       /**
-       * @property  right
-       * right
+       * @property {Number} right
+       * キャンバス左端から矩形領域の右辺までの距離
+       *
+       * right を変更すると矩形領域の幅（width）が自動的に調整されます。
        */
       right: {
         "get": function()   { return this.x + this.width; },
         "set": function(v)  { this.width += v-this.right; },
       },
       /**
-       * @property  bottom
-       * bottom
+       * @property {Number} bottom
+       * キャンバス上端から矩形領域の下辺までの位置
+       *
+       * bottom を変更すると矩形領域の高さ（height）が自動的に調整されます。
        */
       bottom: {
         "get": function()   { return this.y + this.height; },
@@ -2879,8 +4162,10 @@ phina.namespace(function() {
       },
       
       /**
-       * @property  centerX
-       * centerX
+       * @property {Number} centerX
+       * 矩形領域の x 座標
+       *
+       * 現時点では読み取り専用です。
        */
       centerX: {
         "get": function()   { return this.x + this.width/2; },
@@ -2888,10 +4173,11 @@ phina.namespace(function() {
           // TODO: 検討中
         },
       },
-      
       /**
-       * @property  centerY
-       * centerY
+       * @property {Number} centerY
+       * 矩形領域の y 座標
+       *
+       * 現時点では読み取り専用です。
        */
       centerY: {
         "get": function()   { return this.y + this.height/2; },
@@ -2910,21 +4196,58 @@ phina.namespace(function() {
 
   /**
    * @class phina.geom.Circle
+   * # 円領域を表すクラス
+   * キャンバス上の円領域を扱うクラスです。
    * 
    */
   phina.define('phina.geom.Circle', {
 
-    /** x */
+    /**
+     * @property {Number} x
+     * 円の中心の x 座標
+     */
     x: 0,
-    /** y */
+    /**
+     * @property {Number} y
+     * 円の中心の y 座標
+     */
     y: 0,
-    /** 半径 */
+    /**
+     * @property {Number} radius
+     * 円の半径
+     */
     radius: 32,
 
+    /**
+     * @method init
+     * 円領域のコンストラクタです。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(32, 64, 128);
+     *
+     * @param {Number} x 円の中心の x 座標
+     * @param {Number} y 円の中心の y 座標
+     * @param {Number} radius 半径
+     * @return {phina.geom.Rect} 円領域オブジェクト
+     */
     init: function(x, y, radius) {
       this.set(x, y, radius);
     },
 
+    /**
+     * @method set
+     * @chainable
+     * this の各値を再設定します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(32, 64, 128);
+     *     circle.set(100, 200, 32);
+     *
+     * @param {Number} x 円を囲う矩形の左上頂点の x 座標
+     * @param {Number} y 円を囲う矩形の左上頂点の x 座標
+     * @param {Number} radius 半径
+     * @return {phina.geom.Circle} 円領域オブジェクト
+     */
     set: function(x, y, radius) {
       this.x = x;
       this.y = y;
@@ -2933,18 +4256,59 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method moveTo
+     * @chainable
+     * 円領域を座標 (x, y) に移動します。(x, y) は円の中心を表します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(300, 300, 40);
+     *     circle.left; // => 260
+     *     circle.moveTo(100, 100);
+     *     circle.left; // => 60
+     *
+     * @param {Number} x 移動先の x 座標
+     * @param {Number} y 移動先の y 座標
+     */
     moveTo: function(x, y) {
       this.x = x;
       this.y = y;
       return this;
     },
 
+    /**
+     * @method moveBy
+     * @chainable
+     * 円領域を (x, y) だけ移動します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(300, 300, 40);
+     *     circle.left; // => 260
+     *     circle.moveBy(100, 100);
+     *     circle.left; // => 460
+     *
+     * @param {Number} x 移動量の x 座標
+     * @param {Number} y 移動量の y 座標
+     */
     moveBy: function(x, y) {
       this.x += x;
       this.y += y;
       return this;
     },
 
+    /**
+     * @method contains
+     * 座標 (x, y) が円領域の中に含まれるかどうかを返します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(300, 300, 100);
+     *     circle.contains(350, 350); // =>  true
+     *     circle.contains(350, 400); // => false
+     *
+     * @param {Number} x 判定する対象の x 座標
+     * @param {Number} y 判定する対象の y 座標
+     * @return {Boolean} 指定した座標が円領域の中に含まれるかどうか
+     */
     contains: function(x, y) {
       var lenX = this.x-x;
       var lenY = this.y-y;
@@ -2953,17 +4317,47 @@ phina.namespace(function() {
       return lenSquared <= this.radius*this.radius;
     },
 
+    /**
+     * @method clone
+     * this のコピーを生成して返します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(50, 100, 40);
+     *     circle2 = circle.clone();
+     *     circle2.x == circle.x; // => true
+     *
+     * @return {Object} 生成した円領域
+     */
     clone: function() {
       return phina.geom.Circle(this.x, this.y, this.radius);
     },
 
+    /**
+     * @method toRect
+     * 円に外接する正方形を表す矩形領域を生成して返します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(50, 100, 40);
+     *     rect = circle.toRect();
+     *     rect.x; // => 10
+     *     rect.y; // => 60
+     *     rect.width; // => 80
+     *
+     * @return {Object} 生成した矩形領域
+     */
     toRect: function() {
       var size = this.size;
       return phina.geom.Rect(this.x - this.radius, this.y - this.radius, size, size);
     },
-
     /**
-     * 配列に変換
+     * @method toArray
+     * this の各値を要素とする配列を生成して返します。
+     *
+     * ### Example
+     *     circle = phina.geom.Circle(50, 100, 40);
+     *     rect.toArray(); // => [50, 100, 40]
+     *
+     * @return {Number[]} 生成した配列
      */
     toArray: function() {
       return [this.x, this.y, this.radius];
@@ -2972,8 +4366,18 @@ phina.namespace(function() {
     _accessor: {
       
       /**
-       * @property  left
-       * left
+       * @property {Number} left
+       * @readonly
+       * キャンバス左端から円の左端までの距離
+       *
+       * 現時点では読み取り専用です。
+       *
+       * ### Example
+       *     circle = phina.geom.Circle(200, 300, 100);
+       *     circle.left; // => 100
+       *     circle.top; // => 200
+       *     circle.right; // => 300
+       *     circle.bottom; // => 400
        */
       left: {
         "get": function()   { return this.x - this.radius; },
@@ -2982,8 +4386,11 @@ phina.namespace(function() {
         }
       },
       /**
-       * @property  top
-       * top
+       * @property {Number} top
+       * @readonly
+       * キャンバス上端から円の上端までの距離
+       *
+       * 現時点では読み取り専用です。
        */
       top: {
         "get": function()   { return this.y - this.radius; },
@@ -2992,8 +4399,11 @@ phina.namespace(function() {
         }
       },
       /**
-       * @property  right
-       * right
+       * @property {Number} right
+       * @readonly
+       * キャンバス右端から円の右端までの距離
+       *
+       * 現時点では読み取り専用です。
        */
       right: {
         "get": function()   { return this.x + this.radius; },
@@ -3002,8 +4412,11 @@ phina.namespace(function() {
         }
       },
       /**
-       * @property  bottom
-       * bottom
+       * @property {Number} bottom
+       * @readonly
+       * キャンバス下端から円の下端までの距離
+       *
+       * 現時点では読み取り専用です。
        */
       bottom: {
         "get": function()   { return this.y + this.radius; },
@@ -3011,10 +4424,12 @@ phina.namespace(function() {
           // TODO: 
         }
       },
-      
       /**
-       * @property  size
-       * size
+       * @property {Number} size
+       * @readonly
+       * 円の直径
+       *
+       * 現時点では読み取り専用です。
        */
       size: {
         "get": function()   { return this.radius*2; },
@@ -3033,19 +4448,63 @@ phina.namespace(function() {
 
   /**
    * @class phina.geom.Collision
+   * # 衝突判定用クラス
+   * 衝突判定のためのクラスです。すべてのメソッドがスタティックメソッドです。
    * 
    */
   phina.define('phina.geom.Collision', {
 
     _static: {
+      /**
+       * @method testCircleCircle
+       * @static
+       * 2つの円領域が重なっているかどうかを判定します
+       *
+       * ### Example
+       *     circle1 = phina.geom.Circle(100, 100, 30);
+       *     circle2 = phina.geom.Circle(130, 140, 30);
+       * phina.geom.Collision.testCircleCircle(circle1, circle2); // => true
+       *
+       * @param {phina.geom.Circle} circle1 円領域オブジェクト
+       * @param {phina.geom.Circle} circle2 円領域オブジェクト
+       * @return {Boolean} 領域が重なっているかどうか
+       */
       testCircleCircle: function(circle0, circle1) {
         var distanceSquared = phina.geom.Vector2.distanceSquared(circle0, circle1);
         return distanceSquared <= Math.pow(circle0.radius + circle1.radius, 2);
       },
+      /**
+       * @method testRectRect
+       * @static
+       * 2つの矩形領域が重なっているかどうかを判定します
+       *
+       * ### Example
+       *     rect1 = phina.geom.Rect(100, 100, 30, 40);
+       *     rect2 = phina.geom.Rect(200, 200, 10, 10);
+       *     phina.geom.Collision.testRectRect(rect1, rect2); // => false
+       *
+       * @param {phina.geom.Rect} rect1 矩形領域オブジェクト
+       * @param {phina.geom.Rect} rect2 矩形領域オブジェクト
+       * @return {Boolean} 領域が重なっているかどうか
+       */
       testRectRect: function(rect0, rect1) {
         return (rect0.left < rect1.right) && (rect0.right > rect1.left) &&
           (rect0.top < rect1.bottom) && (rect0.bottom > rect1.top);
       },
+      /**
+       * @method testCircleRect
+       * @static
+       * 円領域と矩形領域が重なっているかどうかかを判定します
+       *
+       * ### Example
+       *     circle = phina.geom.Circle(100, 100, 30);
+       *     rect = phina.geom.Rect(100, 100, 30, 40);
+       *     phina.geom.Collision.testCircleRect(circle, rect); // => true
+       *
+       * @param {phina.geom.Circle} circle 円領域オブジェクト
+       * @param {phina.geom.Rect} rect 矩形領域オブジェクト
+       * @return {Boolean} 領域が重なっているかどうか
+       */
       testCircleRect: function(circle, rect) {
         // まずは大きな矩形で判定(高速化)
         var bigRect = phina.geom.Rect(rect.left-circle.radius, rect.top-circle.radius, rect.width+circle.radius*2, rect.height+circle.radius*2);
@@ -3084,7 +4543,22 @@ phina.namespace(function() {
         
         return false;
       },
-      // 円と2点を結ぶ線分の当たり判定
+      /**
+       * @method testCircleLine
+       * @static
+       * 円領域と線分が重なっているかどうかを判定します
+       *
+       * ### Example
+       *     circle = phina.geom.Circle(100, 100, 20);
+       *     p1 = phina.geom.Vector2(0, 0);
+       *     p2 = phina.geom.Vector2(300, 400);
+       *     phina.geom.Collision.testCircleLine(circle, p1, p2); // => true
+       *
+       * @param {phina.geom.Circle} circle 円領域オブジェクト
+       * @param {phina.geom.Vector2} p1 線分の端の座標
+       * @param {phina.geom.Vector2} p2 線分の端の座標
+       * @return {Boolean} 円領域と線分が重なっているかどうか
+       */
       testCircleLine : function(circle, p1, p2) {
         // 先に線分端との判定
         if (circle.contains(p1.x, p1.y) || circle.contains(p2.x, p2.y)) return true;
@@ -3112,6 +4586,79 @@ phina.namespace(function() {
           if (dot1 * dot2 <= 0) return true;
         }
         return false;
+      },
+      /**
+       * @method testLineLine
+       * @static
+       * 2つの線分が重なっているかどうかを判定します
+       * 参考：http://www5d.biglobe.ne.jp/~tomoya03/shtml/algorithm/Intersection.htm
+       *
+       * ### Example
+       *     p1 = phina.geom.Vector2(100, 100);
+       *     p2 = phina.geom.Vector2(200, 200);
+       *     p3 = phina.geom.Vector2(150, 240);
+       *     p4 = phina.geom.Vector2(200, 100);
+       * phina.geom.Collision.testLineLine(p1, p2, p3, p4); // => true
+       *
+       * @param {phina.geom.Vector2} p1 線分1の端の座標
+       * @param {phina.geom.Vector2} p2 線分1の端の座標
+       * @param {phina.geom.Vector2} p3 線分2の端の座標
+       * @param {phina.geom.Vector2} p4 線分2の端の座標
+       * @return {Boolean} 線分1と線分2が重なっているかどうか
+       */
+      testLineLine : function(p1, p2, p3, p4) {
+        //同一ＸＹ軸上に乗ってる場合の誤判定回避
+        if (p1.x == p2.x && p1.x == p3.x && p1.x == p4.x) {
+          var min = Math.min(p1.y, p2.y);
+          var max = Math.max(p1.y, p2.y);
+          if (min <= p3.y && p3.y <= max || min <= p4.y && p4.y <= max) return true;
+          return false;
+        }
+        if (p1.y == p2.y && p1.y == p3.y && p1.y == p4.y) {
+          var min = Math.min(p1.x, p2.x);
+          var max = Math.max(p1.x, p2.x);
+          if (min <= p3.x && p3.x <= max || min <= p4.x && p4.x <= max) return true;
+          return false;
+        }
+        //通常判定
+        var a = (p1.x - p2.x) * (p3.y - p1.y) + (p1.y - p2.y) * (p1.x - p3.x);
+        var b = (p1.x - p2.x) * (p4.y - p1.y) + (p1.y - p2.y) * (p1.x - p4.x);
+        var c = (p3.x - p4.x) * (p1.y - p3.y) + (p3.y - p4.y) * (p3.x - p1.x);
+        var d = (p3.x - p4.x) * (p2.y - p3.y) + (p3.y - p4.y) * (p3.x - p2.x);
+        return a * b <= 0 && c * d <= 0;
+      },
+      /**
+       * @method testRectLine
+       * @static
+       * 矩形と線分が重なっているかどうかを判定します
+       *
+       * ### Example
+       *     rect = phina.geom.Rect(120, 130, 40, 50);
+       *     p1 = phina.geom.Vector2(100, 100);
+       *     p2 = phina.geom.Vector2(200, 200);
+       * phina.geom.Collision.testRectLine(rect, p1, p2); // => true
+       *
+       * @param {phina.geom.Rect} rect 矩形領域オブジェクト
+       * @param {phina.geom.Vector2} p1 線分の端の座標
+       * @param {phina.geom.Vector2} p2 線分の端の座標
+       * @return {Boolean} 矩形と線分が重なっているかどうか
+       */
+      testRectLine : function(rect, p1, p2) {
+          //包含判定(p1が含まれてれば良いのでp2の判定はしない）
+          if (rect.left <= p1.x && p1.x <= rect.right && rect.top <= p1.y && p1.y <= rect.bottom ) return true;
+
+          //矩形の４点
+          var r1 = phina.geom.Vector2(rect.left, rect.top);     //左上
+          var r2 = phina.geom.Vector2(rect.right, rect.top);    //右上
+          var r3 = phina.geom.Vector2(rect.right, rect.bottom); //右下
+          var r4 = phina.geom.Vector2(rect.left, rect.bottom);  //左下
+
+          //矩形の４辺をなす線分との接触判定
+          if (phina.geom.Collision.testLineLine(p1, p2, r1, r2)) return true;
+          if (phina.geom.Collision.testLineLine(p1, p2, r2, r3)) return true;
+          if (phina.geom.Collision.testLineLine(p1, p2, r3, r4)) return true;
+          if (phina.geom.Collision.testLineLine(p1, p2, r1, r4)) return true;
+          return false;
       },
     }
 
@@ -3143,6 +4690,14 @@ phina.namespace(function() {
 
   /**
    * @class phina.util.EventDispatcher
+   * # イベントを扱うためのクラス
+   * イベントを扱うためのメソッドやプロパティを定義しているクラスです。
+   * phina.js が提供するクラスの多くはこの EventDispatcher クラスの子孫となっているため、
+   * ほとんどのオブジェクトで容易にイベントを扱うことができます。
+   *
+   * # 少し説明
+   * this.onxxx = function(){}; でもイベントリスナを設定できるが、あまり推奨しない。
+   * 呼び出される順序は、まず this.onxxxx が呼び出され、あとは on() で登録した順番。
    */
   phina.define('phina.util.EventDispatcher', {
 
@@ -3150,6 +4705,34 @@ phina.namespace(function() {
       this._listeners = {};
     },
 
+    /**
+     * @method on
+     * @chainable
+     * イベントリスナを登録します。
+     *
+     * １つのイベントに対するイベントリスナはいくつでも登録することができます。
+     *
+     * 標準のイベントを検知するには、オブジェクトの {@link Object2D#interactive} プロパティが true である必要があります。
+     * {@link Object2D#interactive} プロパティを設定するには {@link Object2D#setInteractive} メソッドを呼び出してください。
+     *
+     * また、{@link #flare} や {@link #fire} によって定義したカスタムイベントに対するイベントリスナも登録することが
+     * できます。カスタムイベントのイベントリスナは {@link Object2D#interactive} プロパティによらず呼び出されます。
+     * なおカスタムイベントのオブジェクトは Event オブジェクトとは異なります。
+     *
+     * ###Reference
+     * 標準のイベントの種類は以下を参照してください。  
+     * - [Event reference | MDN]( https://developer.mozilla.org/en-US/docs/Web/Events )
+     *
+     * ### Example
+     *     var shape = CircleShape().addChildTo(this).setInteractive(true).setPosition(50, 50);
+     *     shape.on("touchstart", function(e){
+     *       this.color = "blue";
+     *     });
+     *
+     * @param {String} type イベントの種類
+     * @param {Function} listener イベントリスナとなる関数
+     * @param {Object} listener.event Event オブジェクト、またはカスタムイベントのオブジェクト
+     */
     on: function(type, listener) {
       if (this._listeners[type] === undefined) {
         this._listeners[type] = [];
@@ -3159,6 +4742,16 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method off
+     * @chainable
+     * イベントリスナを削除します。
+     *
+     * ある種類のイベントに対するイベントリスナをすべて削除するには {@link #clear} を使用してください。
+     *
+     * @param {String} type イベントの種類
+     * @param {Function} listener イベントリスナ関数
+     */
     off: function(type, listener) {
       var listeners = this._listeners[type];
       var index = listeners.indexOf(listener);
@@ -3168,7 +4761,15 @@ phina.namespace(function() {
       return this;
     },
 
-    fire: function(e) {
+    /**
+     * @method fire
+     * @chainable
+     * カスタムイベントを表すオブジェクトを指定してカスタムイベントを発火します。
+     *
+     * @param {Object} event カスタムイベントを表すオブジェクト
+     * @param {String} event.type カスタムイベントの名前
+     */
+     fire: function(e) {
       e.target = this;
       var oldEventName = 'on' + e.type;
       if (this[oldEventName]) this[oldEventName](e);
@@ -3184,6 +4785,21 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method flare
+     * @chainable
+     * イベント名を指定してカスタムイベントを発火します。
+     *
+     * param 引数を指定することによりカスタムイベントに任意のプロパティを設定することができます。  
+     * これにより、呼び出し元がイベントリスナに任意の値を渡すことができます。  
+     * （ただし target プロパティには必ず自分自身が格納されます。）
+     *
+     * ### Example
+     *     //
+     *
+     * @param {String} type カスタムイベントの名前
+     * @param {Object} [param] カスタムイベントにプロパティを設定するためのオブジェクト
+    */
     flare: function(type, param) {
       var e = {type:type};
       if (param) {
@@ -3196,6 +4812,17 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method one
+     * @chainable
+     * 一度だけ実行されるイベントリスナを登録します。
+     *
+     * 指定したイベントリスナが一度実行されると、そのイベントリスナは削除されます。それ以外の挙動は {@link #on} と同じです。
+     *
+     * @param {String} type イベントの種類
+     * @param {Function} listener イベントリスナとなる関数
+     * @param {Object} listener.event Event オブジェクト、またはカスタムイベントのオブジェクト
+     */
     one: function(type, listener) {
       var self = this;
       
@@ -3210,11 +4837,28 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * @method has
+     * イベントリスナが登録されているかどうかを調べます。
+     *
+     * 指定したイベントの種類に対するイベントリスナが登録されている場合は true、そうでない場合は false を返します。
+     *
+     * @param {String} type イベントの種類
+     * @return {Boolean} 指定したイベントのイベントリスナが登録されているかどうか
+     */
     has: function(type) {
-      if (this._listeners[type] === undefined && !this["on" + type]) return false;
-      return true;
+      return (this._listeners[type] !== undefined && this._listeners[type].length !== 0) || !!this['on' + type];
     },
 
+    /**
+     * @method clear
+     * @chainable
+     * ある種類のイベントに対するイベントリスナをすべて削除します。
+     *
+     * 特定のイベントリスナのみを削除するには {@link #off} を使用してください。
+     *
+     * @param {String} type イベントの種類
+     */
     clear: function(type) {
       var oldEventName = 'on' + type;
       if (this[oldEventName]) delete this[oldEventName];
@@ -3223,8 +4867,30 @@ phina.namespace(function() {
     },
   });
 
-
-  // 別名のメソッドを定義
+  /**
+   * @method addEventListener
+   * {@link #on} のエイリアスです。
+   */
+  /**
+   * @method removeEventListener
+   * {@link #off} のエイリアスです。
+   */
+  /**
+   * @method clearEventListener
+   * {@link #clear} のエイリアスです。
+   */
+  /**
+   * @method hasEventListener
+   * {@link #has} のエイリアスです。
+   */
+  /**
+   * @method dispatchEvent
+   * {@link #fire} のエイリアスです。
+   */
+  /**
+   * @method dispatchEventByType
+   * {@link #flare} のエイリアスです。
+   */
   (function() {
     var methodMap = {
       addEventListener: 'on',
@@ -3246,6 +4912,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.util.Tween
+   * @extends phina.util.EventDispatcher
    * 
    */
   phina.define('phina.util.Tween', {
@@ -3595,6 +5262,7 @@ phina.namespace(function() {
   /**
    * @class phina.util.Ticker
    * tick management class
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.util.Ticker', {
     superClass: 'phina.util.EventDispatcher',
@@ -3616,6 +5284,7 @@ phina.namespace(function() {
       this.frame = 0;
       this.deltaTime = 0;
       this.elapsedTime = 0;
+      this.runner = phina.util.Ticker.runner;
     },
 
     tick: function(func) {
@@ -3649,10 +5318,10 @@ phina.namespace(function() {
       var self = this;
 
       this.startTime = this.currentTime = (new Date()).getTime();
-
+      var runner = self.runner;
       var fn = function() {
         var delay = self.run();
-        setTimeout(fn, delay);
+        runner(fn, delay);
       };
       fn();
 
@@ -3680,6 +5349,13 @@ phina.namespace(function() {
         },
       },
     },
+    
+    _static: {
+      runner: function(run, delay) {
+        setTimeout(run, delay);
+      },
+    },
+    
   });
 
 })();
@@ -3766,6 +5442,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.util.ChangeDispatcher
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.util.ChangeDispatcher', {
     superClass: 'phina.util.EventDispatcher',
@@ -3816,6 +5493,7 @@ phina.namespace(function() {
   /**
    * @class phina.util.Flow
    * tick management class
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.util.Flow', {
     superClass: 'phina.util.EventDispatcher',
@@ -4475,8 +6153,75 @@ phina.namespace(function() {
 phina.namespace(function() {
 
   /**
-   * @class phina.asset.Asset
+   * @class phina.util.Ajax
    * 
+   */
+  phina.define('phina.util.Ajax', {
+    _static: {
+      defaults: {
+        type: 'GET',
+        contentType: 'application/x-www-form-urlencoded',
+        responseType: 'json',
+        data: null,
+        url: '',
+      },
+
+      request: function(options) {
+        var data = ({}).$safe(options, this.defaults);
+
+        var xhr = new XMLHttpRequest();
+        var flow = phina.util.Flow(function(resolve) {
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              if ([200, 201, 0].indexOf(xhr.status) !== -1) {
+                resolve(xhr.response);
+              }
+            }
+          };
+
+          xhr.open(data.type, data.url);
+          xhr.responseType = data.responseType;
+          xhr.send(null);
+        });
+
+        return flow;
+      },
+      get: function(url) {
+        return this.request({
+          type: 'GET',
+          url: url,
+        });
+      },
+      post: function(url) {
+        return this.request({
+          type: 'POST',
+          url: url,
+        });
+      },
+      put: function(url) {
+        return this.request({
+          type: 'PUT',
+          url: url,
+        });
+      },
+      del: function(url) {
+        return this.request({
+          type: 'DELETE',
+          url: url,
+        });
+      },
+    },
+  });
+
+});
+
+
+
+phina.namespace(function() {
+
+  /**
+   * @class phina.asset.Asset
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.asset.Asset', {
     superClass: "phina.util.EventDispatcher",
@@ -4558,7 +6303,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.AssetLoader
-   * 
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.asset.AssetLoader', {
     superClass: "phina.util.EventDispatcher",
@@ -4582,7 +6327,11 @@ phina.namespace(function() {
       var flows = [];
 
       var counter = 0;
-
+      var length = 0;
+      params.forIn(function(type, assets) {
+        length += Object.keys(assets).length;
+      });
+      
       params.forIn(function(type, assets) {
         assets.forIn(function(key, value) {
           var func = phina.asset.AssetLoader.assetLoadFunctions[type];
@@ -4594,7 +6343,7 @@ phina.namespace(function() {
             self.flare('progress', {
               key: key,
               asset: asset,
-              progress: (++counter/flows.length),
+              progress: (++counter/length),
             });
           });
           flows.push(flow);
@@ -4676,7 +6425,11 @@ phina.namespace(function() {
           var text = phina.asset.File();
           return text.load(path);
         }
-      }
+      },
+      register: function(key, func) {
+        this.assetLoadFunctions[key] = func;
+        return this;
+      },
     }
 
   });
@@ -4689,7 +6442,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.File
-   * 
+   * @extends phina.asset.Asset
    */
   phina.define('phina.asset.File', {
     superClass: "phina.asset.Asset",
@@ -4762,7 +6515,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.Script
-   * 
+   * @extends phina.asset.Asset
    */
   phina.define('phina.asset.Script', {
     superClass: "phina.asset.Asset",
@@ -4795,7 +6548,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.Texture
-   *
+   * @extends phina.asset.Asset
    */
   phina.define('phina.asset.Texture', {
     superClass: "phina.asset.Asset",
@@ -4815,8 +6568,6 @@ phina.namespace(function() {
         // this.domElement.crossOrigin = 'Anonymous'; // クロスオリジン解除
       }
 
-      this.domElement.src = this.src;
-
       var self = this;
       this.domElement.onload = function(e) {
         self.loaded = true;
@@ -4826,9 +6577,11 @@ phina.namespace(function() {
         console.error("[phina.js] not found `{0}`!".format(this.src));
 
         var key = self.src.split('/').last.replace('.png', '').split('?').first.split('#').first;
-        e.target.src = "http://dummyimage.com/128x128/444444/eeeeee&text=" + key;
         e.target.onerror = null;
+        e.target.src = "http://dummyimage.com/128x128/444444/eeeeee&text=" + key;
       };
+
+      this.domElement.src = this.src;
     },
 
     clone: function () {
@@ -4909,7 +6662,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.Sound
-   * 
+   * @extends phina.asset.Asset
    */
   phina.define('phina.asset.Sound', {
     superClass: "phina.asset.Asset",
@@ -4917,7 +6670,8 @@ phina.namespace(function() {
     _loop: false,
     _loopStart: 0,
     _loopEnd: 0,
-
+    _playbackRate: 1,
+    
     /**
      * @constructor
      */
@@ -4927,30 +6681,36 @@ phina.namespace(function() {
       this.gainNode = this.context.createGain();
     },
 
-    play: function() {
+    play: function(when, offset, duration) {
+      when = when ? when + this.context.currentTime : 0;
+      offset = offset || 0;
+
       if (this.source) {
         // TODO: キャッシュする？
       }
 
-      this.source = this.context.createBufferSource();
-      this.source.buffer = this.buffer;
-      this.source.loop = this._loop;
-      this.source.loopStart = this._loopStart;
-      this.source.loopEnd = this._loopEnd;
+      var source = this.source = this.context.createBufferSource();
+      var buffer = source.buffer = this.buffer;
+      source.loop = this._loop;
+      source.loopStart = this._loopStart;
+      source.loopEnd = this._loopEnd;
+      source.playbackRate.value = this._playbackRate;
 
       // connect
-      this.source.connect(this.gainNode);
-      this.gainNode.connect(this.context.destination);
+      source.connect(this.gainNode);
+      this.gainNode.connect(phina.asset.Sound.getMasterGain());
       // play
-      this.source.start(0);
+      if (duration !== undefined) {
+        source.start(when, offset, duration);
+      }
+      else {
+        source.start(when, offset);
+      }
       
       // check play end
-      if (this.source.buffer) {
-        var time = (this.source.buffer.duration/this.source.playbackRate.value)*1000;
-        window.setTimeout(function(self) {
-          self.flare('ended');
-        }, time, this);
-      }
+      source.addEventListener('ended', function(){
+        this.flare('ended');
+      }.bind(this));
 
       return this;
     },
@@ -4958,20 +6718,24 @@ phina.namespace(function() {
     stop: function() {
       // stop
       if (this.source) {
+        // stop すると source.endedも発火する
         this.source.stop && this.source.stop(0);
         this.source = null;
+        this.flare('stop');
       }
 
       return this;
     },
 
     pause: function() {
-      this.source.disconnect();
+      this.source.playbackRate.value = 0;
+      this.flare('pause');
       return this;
     },
 
     resume: function() {
-      this.source.connect(this.gainNode);
+      this.source.playbackRate.value = this._playbackRate;
+      this.flare('resume');
       return this;
     },
 
@@ -5021,6 +6785,11 @@ phina.namespace(function() {
     },
     setLoopEnd: function(loopEnd) {
       this.loopEnd = loopEnd;
+      return this;
+    },
+    
+    setPlaybackRate: function(playbackRate) {
+      this.playbackRate = playbackRate;
       return this;
     },
 
@@ -5139,9 +6908,40 @@ phina.namespace(function() {
           if (this.source) this.source._loopEnd = v;
         },
       },
+      playbackRate: {
+        get: function() { return this._playbackRate; },
+        set: function(v) {
+          this._playbackRate = v;
+          if(this.source && this.source.playbackRate.value !== 0){
+            this.source.playbackRate.value = v;
+          }
+        },
+      }
     },
 
+    _defined: function() {
+      this.accessor('volume', {
+        get: function() {
+          return this.getMasterGain().gain.value;
+        },
+        set: function(v) {
+          this.getMasterGain().gain.value = v;
+        },
+      });
+      
+    },
+    
     _static: {
+      
+      getMasterGain: function() {
+        if(!this._masterGain) {
+          var context = this.getAudioContext();
+          this._masterGain = context.createGain();
+          this._masterGain.connect(context.destination);
+        }
+        return this._masterGain;
+      },
+      
       getAudioContext: function() {
         if (!phina.util.Support.webAudio) return null;
 
@@ -5186,11 +6986,11 @@ phina.namespace(function() {
       muteFlag: false,
       currentMusic: null,
 
-      play: function(name) {
+      play: function(name, when, offset, duration) {
         var sound = phina.asset.AssetManager.get('sound', name);
 
         sound.volume = this.getVolume();
-        sound.play();
+        sound.play(when, offset, duration);
 
         return sound;
       },
@@ -5235,7 +7035,7 @@ phina.namespace(function() {
         return this.muteFlag;
       },
 
-      playMusic: function(name, fadeTime, loop) {
+      playMusic: function(name, fadeTime, loop, when, offset, duration) {
         loop = (loop !== undefined) ? loop : true;
 
         if (this.currentMusic) {
@@ -5245,7 +7045,7 @@ phina.namespace(function() {
         var music = phina.asset.AssetManager.get('sound', name);
 
         music.setLoop(loop);
-        music.play();
+        music.play(when, offset, duration);
 
         if (fadeTime > 0) {
           var count = 32;
@@ -5350,7 +7150,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.SpriteSheet
-   * 
+   * @extends phina.asset.Asset
    */
   phina.define('phina.asset.SpriteSheet', {
     superClass: "phina.asset.Asset",
@@ -5470,7 +7270,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.asset.Font
-   * 
+   * @extends phina.asset.Asset
    */
   phina.define("phina.asset.Font", {
     superClass: "phina.asset.Asset",
@@ -5585,7 +7385,7 @@ phina.namespace(function() {
 ;(function() {
   /**
    * @class phina.input.Input
-   * 
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.input.Input', {
 
@@ -5933,6 +7733,9 @@ phina.namespace(function() {
 
 ;(function() {
 
+  /**
+   * @class phina.input.TouchList
+   */
   phina.define('phina.input.TouchList', {
     domElement: null,
     touchMap: null,
@@ -6523,6 +8326,7 @@ phina.namespace(function() {
    * @class phina.input.GamepadManager
    * ゲームパッドマネージャー.
    * ゲームパッド接続状況の監視、個々のゲームパッドの入力状態の更新を行う.
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.input.GamepadManager', {
     superClass: 'phina.util.EventDispatcher',
@@ -7054,7 +8858,9 @@ phina.namespace(function() {
 
 phina.namespace(function() {
 
-
+  /**
+   * @class phina.app.Updater
+   */
   phina.define('phina.app.Updater', {
 
     init: function(app) {
@@ -7151,7 +8957,9 @@ phina.namespace(function() {
 
 phina.namespace(function() {
 
-
+  /**
+   * @class phina.app.Interactive
+   */
   phina.define('phina.app.Interactive', {
 
     init: function(app) {
@@ -7235,6 +9043,7 @@ phina.namespace(function() {
       var e = {
         pointer: p,
         interactive: this,
+        over: overFlag,
       };
 
       if (!prevOverFlag && overFlag) {
@@ -7269,15 +9078,16 @@ phina.namespace(function() {
         obj._touchFlags[p.id] = false;
         obj.flare('pointend', e);
 
-        if (obj._overFlags[p.id]) {
+        if (phina.isMobile() && obj._overFlags[p.id]) {
           obj._overFlags[p.id] = false;
           obj.flare('pointout', e);
+          this._holds.erase(obj);
         }
       }
     },
   });
 
-  
+
 });
 
 phina.namespace(function() {
@@ -7285,6 +9095,7 @@ phina.namespace(function() {
   /**
    * @class phina.app.BaseApp
    * ベースとなるアプリケーションクラス
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.app.BaseApp', {
     superClass: 'phina.util.EventDispatcher',
@@ -7519,17 +9330,28 @@ phina.namespace(function() {
   /**
    * @class phina.app.Element
    * @extends phina.util.EventDispatcher
+   * # 主に要素の親子関係を扱うクラス
+   * 主に親子関係等を定義するクラスです。
    */
   phina.define('phina.app.Element', {
     superClass: 'phina.util.EventDispatcher',
 
-    /// 親
+    /**
+     * @property parent
+     * 親要素
+     */
     parent: null,
 
-    /// 子供
+    /**
+     * @property children
+     * 子要素
+     */
     children: null,
 
-    /// 有効化どうか
+    /**
+     * @property awake
+     * 有効かどうか
+     */
     awake: true,
 
     /**
@@ -7540,6 +9362,14 @@ phina.namespace(function() {
       this.children = [];
     },
 
+    /**
+     * @method addChild
+     * 自身に子要素を追加します。
+     *
+     * 自身を子要素として引数で指定した要素に追加するには {@link #addChildTo} を使用してください。
+     *
+     * @param {Object} child 追加する子要素
+     */
     addChild: function(child) {
       if (child.parent) child.remove();
 
@@ -7550,13 +9380,26 @@ phina.namespace(function() {
 
       return child;
     },
-
+    /**
+     * @method addChildTo
+     * 自身を子要素として引数で指定した要素に追加します。
+     *
+     * 自身に子要素を追加するには {@link #addChild} を使用してください。
+     *
+     * @param {Object} parent 自身を子要素として追加する要素
+     */
     addChildTo: function(parent) {
       parent.addChild(this);
 
       return this;
     },
-
+    /**
+     * @method addChildAt
+     * 自身を、指定した要素の子要素の任意の配列インデックスに追加します。
+     *
+     * @param {Object} child 追加する子要素
+     * @param {Number} index インデックス番号
+     */
     addChildAt: function(child, index) {
       if (child.parent) child.remove();
 
@@ -7567,23 +9410,48 @@ phina.namespace(function() {
 
       return child;
     },
-
+    /**
+     * @method getChildAt
+     * 指定したインデックスの子要素を返します。
+     *
+     * @param {Number} index インデックス番号
+     * @return {Object} 指定したインデックスの子要素
+     */
     getChildAt: function(index) {
       return this.children.at(index);
     },
-
+    /**
+     * @method getChildByName
+     * 指定した名前の子要素を返します。（未実装）
+     */
     getChildByName: function(name) {
-      // TODO: 
+      // TODO:
     },
-
+    /**
+     * @method getChildIndex
+     * 指定した子要素のインデックス番号を返します。
+     *
+     * @param {Object} child 子要素
+     * @return {Number} 指定した子要素のインデックス番号
+     */
     getChildIndex: function(child) {
       return this.children.indexOf(child);
     },
-
+    /**
+     * @method getParent
+     * 指定した要素の親要素を返します。
+     *
+     * @return {Object} 指定した要素の親要素
+     */
     getParent: function() {
       return this.parent;
     },
-
+    /**
+     * @method getRoot
+     * 指定した要素の階層ツリーのルートを返します。
+     *
+     * @return {Object} 指定した要素の階層ツリーのルート
+     */
     getRoot: function() {
       var elm = this;
       for (elm=this.parent; elm.parent != null; elm = elm.parent) {
@@ -7591,7 +9459,13 @@ phina.namespace(function() {
       }
       return elm;
     },
-
+    /**
+     * @method removeChild
+     * @chainable
+     * 指定した要素を自身の子要素から削除します。
+     *
+     * @param {Object} child 要素
+     */
     removeChild: function(child) {
       var index = this.children.indexOf(child);
       if (index !== -1) {
@@ -7600,41 +9474,72 @@ phina.namespace(function() {
       }
       return this;
     },
-
+    /**
+     * @method remove
+     * 自身を親要素の子要素から削除します。
+     */
     remove: function() {
       if (!this.parent) return ;
 
       this.parent.removeChild(this);
       this.parent = null;
-      
+
       return this;
     },
-
+    /**
+     * @method isAwake
+     * 自身が有効かどうかを返します。
+     *
+     * @return {Boolean} 有効かどうか
+     */
     isAwake: function() {
       return this.awake;
     },
-
+    /**
+     * @method wakeUp
+     * 自身を有効にします。
+     */
     wakeUp: function() {
       this.awake = true;
       return this;
     },
-
+    /**
+     * @method sleep
+     * 自身を無効にします。
+     */
     sleep: function() {
       this.awake = false;
       return this;
     },
-
+    /**
+     * @method fromJSON
+     * JSON 形式を使って自身に子要素を追加することができます。
+     *
+     * ### Example
+     *      this.fromJSON({
+     *        "children": {
+     *          "label": {                  //キー名が追加する子要素の名前になる
+     *            "className": "Label",     //クラス
+     *            "arguments": ['hello!'],  //初期化時の引数
+     *            "x":320,                  //その他プロパティ
+     *            "y":480,
+     *          },
+     *        },
+     *      });
+     *
+     * @param {JSON} json JSON 形式
+     */
     fromJSON: function(json) {
 
       var createChildren = function(name, data) {
-        // 
+        //
         var args = data.arguments;
         args = (args instanceof Array) ? args : [args];
-        // 
+        //
         var _class = phina.using(data.className);
-        // 
+        //
         var element = _class.apply(null, args);
-        
+
         element.name = name;
         this[name] = element;
 
@@ -7657,24 +9562,29 @@ phina.namespace(function() {
 
       return this;
     },
-
+    /**
+     * @method toJSON
+     * 自身の子要素を JSON 形式で返します。
+     *
+     * @return {JSON} JSON形式
+     */
     toJSON: function() {
+      var keys = Object.keys(phina.using(this.className).defaults || {});
+
+      this._hierarchies.forEach(function(e) {
+        var d = e.defaults;
+        if (d) {
+          Object.keys(d).forEach(function(k) {
+            if (keys.indexOf(k) === -1) {
+              keys.push(k);
+            }
+          });
+        }
+      });
+
+      keys.push('name', 'className');
+
       var json = {};
-
-      // this.forIn(function(key, value) {
-      //   if (key[0] === '_') return ;
-      //   json[key] = value;
-      // });
-
-      var keys = [
-        'x', 'y',
-        'rotation',
-        'scaleX', 'scaleY',
-        'originX', 'originY',
-        'className',
-        'name',
-      ];
-
       keys.each(function(key) {
         json[key] = this[key];
       }, this);
@@ -7685,15 +9595,15 @@ phina.namespace(function() {
 
       if (children.length) {
         json.children = {};
-        children.each(function(child) {
-          json.children[child.name] = child;
+        children.each(function(child, i) {
+          json.children[child.name || (child.className + '_' + i)] = child;
         });
       }
 
       return json;
     },
   });
-  
+
 });
 
 phina.namespace(function() {
@@ -8136,7 +10046,10 @@ phina.namespace(function() {
 
 phina.namespace(function() {
 
-
+  /**
+   * @class phina.app.Scene
+   * @extends phina.app.Element
+   */
   phina.define('phina.app.Scene', {
     superClass: 'phina.app.Element',
 
@@ -8170,6 +10083,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.accessory.Accessory
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.accessory.Accessory', {
     superClass: 'phina.util.EventDispatcher',
@@ -8243,12 +10157,21 @@ phina.namespace(function() {
 
   /**
    * @class phina.accessory.Tweener
-   * Tweener
+   * # Tweener
+   * Tweenerはオブジェクトのプロパティに対して、
+   * Tweenアニメーションの効果を与えるクラスです。  
+   * 主に {@link phina.app.Element} とそのサブクラスで使用されます。
+   * @extends phina.accessory.Accessory
    */
   var Tweener = phina.define('phina.accessory.Tweener', {
     superClass: 'phina.accessory.Accessory',
-
-    updateType: 'normal',
+    
+    /**
+     * アニメーションを更新する方法を指定します。  
+     * 変更するとdurationによる時間の進み方が変わります。  
+     * 詳しくは{@link #UPDATE_MAP}を参照してください。
+     */
+    updateType: 'delta',
 
     /**
      * @constructor
@@ -8267,15 +10190,31 @@ phina.namespace(function() {
       this._update = this._updateTask;
     },
 
+    /**
+     * @param {phina.app.BaseApp} app
+     */
     update: function(app) {
       this._update(app);
     },
 
+    /**
+     * {@link #updateType}を変更します。
+     * @param {String} type 更新方法を表す文字列
+     * @chainable
+     */
     setUpdateType: function(type) {
       this.updateType = type;
       return this;
     },
 
+    /**
+     * propsで指定した値になるまで、durationで指定した時間をかけて、アニメーションさせます。
+     * @param {Object} props 変更したいプロパティをkeyとしたオブジェクト
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     * 
+     */
     to: function(props, duration, easing) {
       this._add({
         type: 'tween',
@@ -8287,6 +10226,13 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * アニメーション開始時の値とpropsで指定した値を加算した値になるまで、durationで指定した時間をかけて、アニメーションさせます。
+     * @param {Object} props 変更したいプロパティをkeyとしたオブジェクト
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     by: function(props, duration, easing) {
       this._add({
         type: 'tween',
@@ -8299,6 +10245,13 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * propsで指定した値からアニメーション開始時の値になるまで、durationで指定した時間をかけて、アニメーションさせます。
+     * @param {Object} props 変更したいプロパティをkeyとしたオブジェクト
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     from: function(props, duration, easing) {
       this._add({
         type: 'tween',
@@ -8310,6 +10263,11 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * 指定した時間が経過するまで待機します。
+     * @param {Number} time waitする時間
+     * @chainable
+     */
     wait: function(time) {
       this._add({
         type: 'wait',
@@ -8320,6 +10278,13 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * 現在設定されているアニメーションが終了した時に呼び出される関数をセットします。
+     * @param {Function} func 呼び出される関数
+     * @param {Object} self (optional) func内でthisにしたいオブジェクト。
+     * @param {Object[]} args (optional) funcの引数にしたい値
+     * @chainable
+     */
     call: function(func, self, args) {
       this._add({
         type: 'call',
@@ -8333,9 +10298,11 @@ phina.namespace(function() {
     },
 
     /**
-     * プロパティをセット
-     * @param {Object} key
-     * @param {Object} value
+     * 現在設定されているアニメーションが終了した時にプロパティをセットします。  
+     * 第一引数にオブジェクトをセットすることもできます。
+     * @param {String | Object} key valueをセットするプロパティ名か、変更したいプロパティをkeyとしたオブジェクト。
+     * @param {Object} value (optional) セットする値
+     * @chainable
      */
     set: function(key, value) {
       var values = null;
@@ -8356,41 +10323,107 @@ phina.namespace(function() {
       return this;
     },
 
+    /**
+     * x, yに対して、 {@link #to} の処理を行います。
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     moveTo: function(x, y, duration, easing) {
       return this.to({ x: x, y: y }, duration, easing);
     },
+    
+    /**
+     * x, yに対して、 {@link #by} の処理を行います。
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     moveBy: function(x, y, duration, easing) {
       return this.by({ x: x, y: y }, duration, easing);
     },
 
+    /**
+     * rotationに対して、 {@link #to} の処理を行います。
+     * @param {Number} rotation
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     rotateTo: function(rotation, duration, easing) {
       return this.to({ rotation: rotation }, duration, easing);
     },
+    
+    /**
+     * rotationに対して、 {@link #by} の処理を行います。
+     * @param {Number} rotation
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     rotateBy: function(rotation, duration, easing) {
       return this.by({ rotation: rotation }, duration, easing);
     },
 
+    /**
+     * scaleX, scaleYに対して {@link #to} の処理を行います。
+     * @param {Number} scale scaleXとscaleYに設定する値
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     scaleTo: function(scale, duration, easing) {
       return this.to({ scaleX: scale, scaleY: scale }, duration, easing);
     },
+    /**
+     * scaleX, scaleYに対して {@link #by} の処理を行います。
+     * @param {Number} scale scaleXとscaleYに設定する値
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     scaleBy: function(scale, duration, easing) {
       return this.by({ scaleX: scale, scaleY: scale }, duration, easing);
     },
 
+    /**
+     * alphaに対して {@link #to} の処理を行います。
+     * @param {Number} value alphaに設定する値
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     fade: function(value, duration, easing) {
       return this.to({ alpha: value }, duration, easing);
     },
 
+    /**
+     * alphaを0にするアニメーションを設定します。
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     fadeOut: function(duration, easing) {
       return this.fade(0.0, duration, easing);
     },
 
+    /**
+     * alphaを1にするアニメーションを設定します。
+     * @param {Number} duration (optional) アニメーションにかける時間
+     * @param {String} easing (optional) easing {@link phina.util.Tween#EASING}を参照してください。
+     * @chainable
+     */
     fadeIn: function(duration, easing) {
       return this.fade(1.0, duration, easing);
     },
 
     /**
      * アニメーション開始
+     * @chainable
      */
     play: function() {
       this.playing = true;
@@ -8399,12 +10432,17 @@ phina.namespace(function() {
 
     /**
      * アニメーションを一時停止
+     * @chainable
      */
     pause: function() {
       this.playing = false;
       return this;
     },
 
+    /**
+     * アニメーションを停止し、最初まで巻き戻します。
+     * @chainable
+     */
     stop: function() {
       this.playing = false;
       this.rewind();
@@ -8413,6 +10451,7 @@ phina.namespace(function() {
 
     /**
      * アニメーションを巻き戻す
+     * @chainable
      */
     rewind: function() {
       this._update = this._updateTask;
@@ -8437,6 +10476,7 @@ phina.namespace(function() {
     /**
      * アニメーションループ設定
      * @param {Boolean} flag
+     * @chainable
      */
     setLoop: function(flag) {
       this._loop = flag;
@@ -8445,12 +10485,29 @@ phina.namespace(function() {
 
     /**
      * アニメーションをクリア
+     * @chainable
      */
     clear: function() {
       this._init();
       return this;
     },
 
+    /**
+     * JSON形式でアニメーションを設定します。
+     * @chainable
+     * @param {Object} json
+     * @param {Boolean} json.loop (optional) ループする場合true
+     * @param {Array[]} json.tweens 設定するアニメーション
+     * 
+     * ```
+     * [
+     *   [method, arg1, arg2,,,],
+     *   ['to', {value: 100}, 1000, 'swing'],
+     *   ['wait', 1000],
+     *   ['set', 'text', 'END']
+     * ]
+     * ```
+     */
     fromJSON: function(json) {
       if (json.loop !== undefined) {
         this.setLoop(json.loop);
@@ -8566,6 +10623,18 @@ phina.namespace(function() {
     },
 
     _static: {
+      /**
+       * @static
+       * {@link #updateType}に設定する更新方法の定義です。
+       * 下記の表に定義済みの更新方法を{@link #updateType}に設定することで、
+       * アニメーションの更新方法を変更することができます。
+       * 
+       * | 更新方法 | 単位(デフォルト値) | 1フレームあたりのアニメーション速度 |
+       * |-|-|-|
+       * | normal | ミリ秒(1000) | app.fpsによって変化 |
+       * | delta | ミリ秒(1000) | 経過時間によって変化 |
+       * | fps | フレーム(30) | 必ず同じ速度で変化 |
+       */
       UPDATE_MAP: {
         normal: {
           func: function(app) {
@@ -8594,6 +10663,11 @@ phina.namespace(function() {
 
   var UPDATE_MAP = Tweener.UPDATE_MAP;
 
+  /**
+   * @member phina.app.Element
+   * @property tweener
+   * 自身にアタッチ済みの{@link phina.accessory.Tweener}オブジェクト。
+   */
   phina.app.Element.prototype.getter('tweener', function() {
     if (!this._tweener) {
       this._tweener = phina.accessory.Tweener().attachTo(this);
@@ -8610,6 +10684,7 @@ phina.namespace(function() {
   /**
    * @class phina.accessory.Draggable
    * Draggable
+   * @extends phina.accessory.Accessory
    */
   phina.define('phina.accessory.Draggable', {
     superClass: 'phina.accessory.Accessory',
@@ -8712,6 +10787,7 @@ phina.namespace(function() {
   /**
    * @class phina.accessory.Flickable
    * Flickable
+   * @extends phina.accessory.Accessory
    */
   phina.define('phina.accessory.Flickable', {
     superClass: 'phina.accessory.Accessory',
@@ -8829,6 +10905,7 @@ phina.namespace(function() {
   /**
    * @class phina.accessory.FrameAnimation
    * FrameAnimation
+   * @extends phina.accessory.Accessory
    */
   phina.define('phina.accessory.FrameAnimation', {
     superClass: 'phina.accessory.Accessory',
@@ -8862,7 +10939,12 @@ phina.namespace(function() {
       }
     },
 
-    gotoAndPlay: function(name) {
+    gotoAndPlay: function(name, keep) {
+      keep = (keep !== undefined) ? keep : true;
+      if (keep && name === this.currentAnimationName
+               && this.currentFrameIndex < this.currentAnimation.frames.length) {
+        return this;
+      }
       this.frame = 0;
       this.currentFrameIndex = 0;
       this.currentAnimation = this.ss.getAnimation(name);
@@ -8920,9 +11002,10 @@ phina.namespace(function() {
 
   /**
    * @class phina.accessory.Physical
-   * 本物ではないので名前変えるかも*
+   * 本物ではないので名前変えるかも
    * FakePhysical or MarioPhysical or LiePhysical
    * RetroPysical or PysicaLike
+   * @extends phina.accessory.Accessory
    */
   phina.define('phina.accessory.Physical', {
     superClass: 'phina.accessory.Accessory',
@@ -9671,6 +11754,16 @@ phina.namespace(function() {
       return this.beginPath().ellipse(x, y, width, height).stroke();
     },
 
+    fillText: function() {
+      this._context.fillText.apply(this._context, arguments);
+      return this;
+    },
+
+    strokeText: function() {
+      this._context.strokeText.apply(this._context, arguments);
+      return this;
+    },
+
     /*
      * 画像を描画
      */
@@ -9875,6 +11968,10 @@ phina.namespace(function() {
       createLinearGradient: function() {
         return this._context.createLinearGradient.apply(this._context, arguments);
       },
+
+      createRadialGradient: function() {
+        return this._context.createRadialGradient.apply(this._context, arguments);
+      },
     },
   });
 });
@@ -9889,6 +11986,7 @@ phina.namespace(function() {
   /**
    * @class phina.graphics.CanvasRecorder
    * Reference <https://github.com/jnordberg/gif.js/>
+   * @extends phina.util.EventDispatcher
    */
   phina.define('phina.graphics.CanvasRecorder', {
 
@@ -10067,7 +12165,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.DisplayElement
-   * 
+   * @extends phina.app.Object2D
    */
   phina.define('phina.display.DisplayElement', {
     superClass: 'phina.app.Object2D',
@@ -10120,6 +12218,10 @@ phina.namespace(function() {
      * @private
      */
     _calcWorldAlpha: function() {
+      if (this.alpha < 0) {
+        this._worldAlpha = 0;
+        return;
+      }
       if (!this.parent) {
         this._worldAlpha = this.alpha;
         return ;
@@ -10140,7 +12242,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.PlainElement
-   *
+   * @extends phina.display.DisplayElement
    */
   phina.define('phina.display.PlainElement', {
     superClass: 'phina.display.DisplayElement',
@@ -10173,7 +12275,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.Shape
-   *
+   * @extends phina.display.PlainElement
    */
   var Shape = phina.define('phina.display.Shape', {
     superClass: 'phina.display.PlainElement',
@@ -10207,13 +12309,16 @@ phina.namespace(function() {
       this.watchDraw = true;
       this._dirtyDraw = true;
 
-      this.on('enterframe', function() {
+      var checkRender = function() {
         // render
         if (this.watchDraw && this._dirtyDraw === true) {
           this.render(this.canvas);
           this._dirtyDraw = false;
         }
-      });
+      };
+
+      this.on('enterframe', checkRender);
+      this.on('added', checkRender);
     },
 
     calcCanvasWidth: function() {
@@ -10329,7 +12434,7 @@ phina.namespace(function() {
 phina.namespace(function() {
   /**
    * @class phina.display.RectangleShape
-   *
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.RectangleShape', {
     superClass: 'phina.display.Shape',
@@ -10361,7 +12466,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.CircleShape
-   *
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.CircleShape', {
     superClass: 'phina.display.Shape',
@@ -10388,7 +12493,7 @@ phina.namespace(function() {
 phina.namespace(function() {
   /**
    * @class phina.display.TriangleShape
-   *
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.TriangleShape', {
     superClass: 'phina.display.Shape',
@@ -10418,7 +12523,7 @@ phina.namespace(function() {
 phina.namespace(function() {
   /**
    * @class phina.display.StarShape
-   *
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.StarShape', {
     superClass: 'phina.display.Shape',
@@ -10455,7 +12560,7 @@ phina.namespace(function() {
 phina.namespace(function() {
   /**
    * @class phina.display.PolygonShape
-   *
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.PolygonShape', {
     superClass: 'phina.display.Shape',
@@ -10490,7 +12595,7 @@ phina.namespace(function() {
 phina.namespace(function() {
   /**
    * @class phina.display.HeartShape
-   *
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.HeartShape', {
     superClass: 'phina.display.Shape',
@@ -10522,7 +12627,10 @@ phina.namespace(function() {
 });
 
 phina.namespace(function () {
-
+  /**
+   * @class phina.display.PathShape
+   * @extends phina.display.Shape
+   */
   var PathShape = phina.define('phina.display.PathShape', {
     superClass: 'phina.display.Shape',
     paths: null,
@@ -10535,7 +12643,7 @@ phina.namespace(function () {
       this.lineJoin = options.lineJoin;
       this.lineCap = options.lineCap;
     },
-    
+
     setPaths: function (paths) {
       this.paths = paths;
       this._dirtyDraw = true;
@@ -10644,11 +12752,12 @@ phina.namespace(function () {
 
 });
 
+
 phina.namespace(function() {
 
   /**
    * @class phina.display.Sprite
-   * 
+   * @extends phina.display.DisplayElement
    */
   phina.define('phina.display.Sprite', {
     superClass: 'phina.display.DisplayElement',
@@ -10683,10 +12792,10 @@ phina.namespace(function() {
       this.width = this._image.domElement.width;
       this.height = this._image.domElement.height;
 
-      this.frameIndex = 0;
-
       if (width) { this.width = width; }
       if (height) { this.height = height; }
+
+      this.frameIndex = 0;
 
       return this;
     },
@@ -10737,7 +12846,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.Label
-   * 
+   * @extends phina.display.Shape
    */
   phina.define('phina.display.Label', {
     superClass: 'phina.display.Shape',
@@ -10872,7 +12981,8 @@ phina.namespace(function() {
 phina.namespace(function() {
 
   /**
-   * @class
+   * @class phina.display.DisplayScene
+   * @extends phina.app.Scene
    */
   phina.define('phina.display.DisplayScene', {
     superClass: 'phina.app.Scene',
@@ -10880,7 +12990,7 @@ phina.namespace(function() {
     init: function(params) {
       this.superInit();
 
-      params = ({}).$safe(params, phina.display.DisplayScene.default);
+      params = ({}).$safe(params, phina.display.DisplayScene.defaults);
 
       this.canvas = phina.graphics.Canvas();
       this.canvas.setSize(params.width, params.height);
@@ -10916,7 +13026,7 @@ phina.namespace(function() {
     },
 
     _static: {
-      default: {
+      defaults: {
         width: 640,
         height: 960,
       },
@@ -10932,6 +13042,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.Layer
+   * @extends phina.display.DisplayElement
    */
   phina.define('phina.display.Layer', {
     superClass: 'phina.display.DisplayElement',
@@ -10967,7 +13078,8 @@ phina.namespace(function() {
 phina.namespace(function() {
 
   /**
-   * @class phina.display.Layer
+   * @class phina.display.CanvasLayer
+   * @extends phina.display.Layer
    */
   phina.define('phina.display.CanvasLayer', {
     superClass: 'phina.display.Layer',
@@ -11002,7 +13114,8 @@ phina.namespace(function() {
 phina.namespace(function() {
 
   /**
-   * @class
+   * @class phina.display.ThreeLayer
+   * @extends phina.display.Layer
    */
   phina.define('phina.display.ThreeLayer', {
     superClass: 'phina.display.Layer',
@@ -11041,7 +13154,9 @@ phina.namespace(function() {
 
 
 phina.namespace(function() {
-  
+  /**
+   * @class phina.display.CanvasRenderer
+   */
   phina.define('phina.display.CanvasRenderer', {
 
     init: function(canvas) {
@@ -11053,12 +13168,12 @@ phina.namespace(function() {
       if (scene.backgroundColor) {
         this.canvas.clearColor(scene.backgroundColor);
       }
-      
+
       this._context.save();
       this.renderChildren(scene);
       this._context.restore();
     },
-    
+
     renderChildren: function(obj) {
       // 子供たちも実行
       if (obj.children.length > 0) {
@@ -11070,9 +13185,12 @@ phina.namespace(function() {
     },
 
     renderObject: function(obj) {
-      if (obj.visible === false) return ;
+      if (obj.visible === false && !obj.interactive) return;
 
       obj._calcWorldMatrix && obj._calcWorldMatrix();
+
+      if (obj.visible === false) return;
+
       obj._calcWorldAlpha && obj._calcWorldAlpha();
 
       var context = this.canvas.context;
@@ -11154,6 +13272,10 @@ phina.namespace(function() {
 
       if (options.fps !== undefined) {
         this.fps = options.fps;
+      }
+      
+      if(typeof options.runner === 'function') {
+        this.ticker.runner = options.runner;
       }
 
       this.mouse = phina.input.Mouse(this.domElement);
@@ -11247,7 +13369,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.display.CanvasApp
-   * 
+   * @extends phina.display.DomApp
    */
   phina.define('phina.display.CanvasApp', {
     superClass: 'phina.display.DomApp',
@@ -11263,6 +13385,9 @@ phina.namespace(function() {
         if (options.append) {
           document.body.appendChild(options.domElement);
         }
+      }
+      if(!options.runner && phina.isAndroid()) {
+        options.runner = phina.global.requestAnimationFrame;
       }
       this.superInit(options);
 
@@ -11299,7 +13424,9 @@ phina.namespace(function() {
       // pushScene, popScene 対策
       this.on('push', function() {
         // onenter 対策で描画しておく
-        this._draw();
+        if (this.currentScene.canvas) {
+          this._draw();
+        }
       });
     },
 
@@ -11345,6 +13472,7 @@ phina.namespace(function() {
   /**
    * @class phina.effect.Wave
    * Button
+   * @extends phina.display.CircleShape
    */
   phina.define('phina.effect.Wave', {
     superClass: 'phina.display.CircleShape',
@@ -11378,6 +13506,7 @@ phina.namespace(function() {
   /**
    * @class phina.ui.Button
    * Button
+   * @extends phina.display.Shape
    */
   phina.define('phina.ui.Button', {
     superClass: 'phina.display.Shape',
@@ -11448,7 +13577,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.ui.Gauge
-   * 
+   * @extends phina.display.Shape
    */
   phina.define('phina.ui.Gauge', {
     superClass: 'phina.display.Shape',
@@ -11581,7 +13710,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.ui.CircleGauge
-   * 
+   * @extends phina.ui.Gauge
    */
   phina.define('phina.ui.CircleGauge', {
     superClass: 'phina.ui.Gauge',
@@ -11644,6 +13773,10 @@ phina.namespace(function() {
 
   var textWidthCache = {};
 
+  /**
+   * @class phina.ui.LabelArea
+   * @extends phina.display.Label
+   */
   var LabelArea = phina.define('phina.ui.LabelArea', {
     superClass: 'phina.display.Label',
 
@@ -11682,83 +13815,64 @@ phina.namespace(function() {
       return cache || (textWidthCache[this.font] = {});
     },
     
+    spliceLines: function(lines) {
+      var rowWidth = this.width;
+      var context = this.canvas.context;
+      context.font = this.font;
+
+      var cache = this.getTextWidthCache();
+
+      // update cache
+      this._text.each(function(ch) {
+        if (!cache[ch]) {
+          cache[ch] = context.measureText(ch).width;
+        }
+      });
+      
+      var localLines = [];
+      lines.forEach(function(line) {
+        
+        var str = '';
+        var totalWidth = 0;
+
+        // はみ出ていたら強制的に改行する
+        line.each(function(ch) {
+          var w = cache[ch];
+
+          if ((totalWidth+w) > rowWidth) {
+            localLines.push(str);
+            str = '';
+            totalWidth = 0;
+          }
+
+          str += ch;
+          totalWidth += w;
+        });
+
+        // 残りを push する
+        localLines.push(str);
+
+      });
+      
+
+      return localLines;
+    },
+    
     getLines: function() {
       if (this._lineUpdate === false) {
         return this._lines;
       }
-
       this._lineUpdate = false;
-      var lines = this._lines = (this.text + '').split('\n');
 
-      if (this.width < 1) return lines;
-
-      var rowWidth = this.width;
-
-      var context = this.canvas.context;
-      context.font = this.font;
-      //どのへんで改行されるか目星つけとく
-      var pos = rowWidth / context.measureText('あ').width | 0;
-
-      var cache = this.getTextWidthCache();
-      for (var i = lines.length - 1; 0 <= i; --i) {
-        var text = lines[i];
-        if (text === '') {
-          continue;
-        }
-
-        var j = 0;
-        var breakFlag = false;
-        var char;
-        while (true) {
-          //if (rowWidth > (cache[text] || (cache[text] = dummyContext.measureText(text).width))) break;
-
-          var len = text.length;
-          if (pos >= len) pos = len - 1;
-          char = text.substring(0, pos);
-          if (!cache[char]) {
-            cache[char] = context.measureText(char).width;
-          }
-          var textWidth = cache[char];
-
-          if (rowWidth < textWidth) {
-            do {
-              char = text[--pos];
-              if (!cache[char]) {
-                cache[char] = context.measureText(char).width;
-              }
-              textWidth -= cache[char];
-            } while (rowWidth < textWidth);
-
-          } else {
-
-            do {
-              char = text[pos++];
-              if (pos >= len) {
-                breakFlag = true;
-                break;
-              }
-              if (!cache[char]) {
-                cache[char] = context.measureText(char).width;
-              }
-              textWidth += cache[char];
-            } while (rowWidth >= textWidth);
-
-            --pos;
-          }
-          if (breakFlag) {
-            break;
-          }
-          //0 のときは無限ループになるので、1にしとく
-          if (pos === 0) pos = 1;
-
-          lines.splice(i + j, 1, text.substring(0, pos), text = text.substring(pos, len));
-          ++j;
-        }
-
+      var lines = (this.text + '').split('\n');
+      if (this.width < 1) {
+        this._lines = lines;
+      }
+      else {
+        this._lines = this.spliceLines(lines);
       }
 
-      return lines;
-
+      return this._lines;
     },
 
     prerender: function(canvas) {
@@ -11941,7 +14055,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.ManagerScene
-   * 
+   * @extends phina.app.Scene
    */
   phina.define('phina.game.ManagerScene', {
     superClass: 'phina.app.Scene',
@@ -12118,15 +14232,14 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.SplashScene
-   * 
+   * @extends phina.display.DisplayScene
    */
   phina.define('phina.game.SplashScene', {
     superClass: 'phina.display.DisplayScene',
 
     init: function(options) {
-      this.superInit(options);
-
       var defaults = phina.game.SplashScene.defaults;
+      this.superInit(options);
 
       var texture = phina.asset.Texture();
       texture.load(defaults.imageURL).then(function() {
@@ -12171,7 +14284,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.TitleScene
-   * 
+   * @extends phina.display.DisplayScene
    */
   phina.define('phina.game.TitleScene', {
     superClass: 'phina.display.DisplayScene',
@@ -12179,9 +14292,8 @@ phina.namespace(function() {
      * @constructor
      */
     init: function(params) {
-      this.superInit(params);
-
       params = ({}).$safe(params, phina.game.TitleScene.defaults);
+      this.superInit(params);
 
       this.backgroundColor = params.backgroundColor;
 
@@ -12228,8 +14340,6 @@ phina.namespace(function() {
       defaults: {
         title: 'phina.js games',
         message: '',
-        width: 640,
-        height: 960,
 
         fontColor: 'white',
         backgroundColor: 'hsl(200, 80%, 64%)',
@@ -12252,7 +14362,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.ResultScene
-   *
+   * @extends phina.display.DisplayScene
    */
   phina.define('phina.game.ResultScene', {
     superClass: 'phina.display.DisplayScene',
@@ -12260,9 +14370,8 @@ phina.namespace(function() {
      * @constructor
      */
     init: function(params) {
-      this.superInit(params);
-
       params = ({}).$safe(params, phina.game.ResultScene.defaults);
+      this.superInit(params);
 
       var message = params.message.format(params);
 
@@ -12370,9 +14479,6 @@ phina.namespace(function() {
         hashtags: 'phina_js,game,javascript',
         url: phina.global.location && phina.global.location.href,
 
-        width: 640,
-        height: 960,
-
         fontColor: 'white',
         backgroundColor: 'hsl(200, 80%, 64%)',
         backgroundImage: '',
@@ -12392,7 +14498,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.LoadingScene
-   * 
+   * @extends phina.display.DisplayScene
    */
   phina.define('phina.game.LoadingScene', {
     superClass: 'phina.display.DisplayScene',
@@ -12454,9 +14560,6 @@ phina.namespace(function() {
 
     _static: {
       defaults: {
-        width: 640,
-        height: 960,
-
         exitType: 'auto',
 
         lie: false,
@@ -12476,7 +14579,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.CountScene
-   * 
+   * @extends phina.display.DisplayScene
    */
   phina.define('phina.game.CountScene', {
     superClass: 'phina.display.DisplayScene',
@@ -12579,7 +14682,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.PauseScene
-   *
+   * @extends phina.display.DisplayScene
    */
   phina.define('phina.game.PauseScene', {
     superClass: 'phina.display.DisplayScene',
@@ -12587,9 +14690,8 @@ phina.namespace(function() {
      * @constructor
      */
     init: function(params) {
-      this.superInit(params);
-
       params = ({}).$safe(params, phina.game.PauseScene.defaults);
+      this.superInit(params);
 
       this.backgroundColor = params.backgroundColor;
 
@@ -12618,9 +14720,6 @@ phina.namespace(function() {
 
     _static: {
       defaults: {
-        width: 640,
-        height: 960,
-
         fontColor: 'white',
         backgroundColor: 'hsla(0, 0%, 0%, 0.85)',
 
@@ -12636,7 +14735,7 @@ phina.namespace(function() {
 
   /**
    * @class phina.game.GameApp
-   * 
+   * @extends phina.display.CanvasApp
    */
   phina.define('phina.game.GameApp', {
     superClass: 'phina.display.CanvasApp',
@@ -12821,10 +14920,11 @@ phina.namespace(function() {
   var b2 = phina.box2d.b2;
 
   /**
-   * @class
+   * @class phina.box2d.Box2dLayer
+   * @extends phina.display.Layer
    */
   phina.define('phina.box2d.Box2dLayer', {
-    superClass: 'phina.display.Layer',
+    superClass: 'phina.display.CanvasLayer',
 
 
     init: function(params) {
@@ -12893,7 +14993,8 @@ phina.namespace(function() {
   var b2 = phina.box2d.b2;
 
   /**
-   * @class
+   * @class phina.box2d.Box2dBody
+   * @extends phina.accessory.Accessory
    */
   phina.define('phina.box2d.Box2dBody', {
     superClass: 'phina.accessory.Accessory',
@@ -13018,3 +15119,4 @@ phina.namespace(function() {
 
 
 });
+
