@@ -91,7 +91,7 @@ phina.define("Result", {
 
   init: function(param) {
     this.superInit();
-    this.score = param.score;
+    this.score = param.score - 1;
     this.backgroundColor = "pink";
 
     Label({
@@ -102,7 +102,7 @@ phina.define("Result", {
   },
   update: function(app) {
     if (app.keyboard.getKey("T")) {
-      let result = "せき止めた人数は" + (this.score - 1) + "人でした！" + " https://hukuda222.github.io/gamejam/jam0302/ ";
+      let result = "せき止めた人数は" + String(this.score) + "人でした！" + " https://hukuda222.github.io/gamejam/jam0302/ ";
       location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(result) + "&hashtags=traP3jam";
     } else if (app.keyboard.getKey("enter")) {
       this.exit();
