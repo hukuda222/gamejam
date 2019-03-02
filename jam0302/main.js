@@ -204,9 +204,11 @@ phina.define("Main", {
       }
       this.enemys.push(e);
     }
-    this.group.children.each((g) => {
-      this.enemys.forEach((e) => {
-        if (e.hitTestElement(g)) {
+    const adds = [];
+    this.enemys.forEach((e) => {
+      let end = false;
+      this.group.children.each((g) => {
+        if (e.hitTestElement(g) && !end) {
           e.is_in = true;
           let ne = Sprite(e.type);
           if (e.type !== "chari")ne.width = 50;
@@ -214,9 +216,13 @@ phina.define("Main", {
           ne.height = 75;
           ne.x = (e.x + g.x) / 2;
           ne.y = (e.y + g.y) / 2;
-          ne.addChildTo(this.group);
+          adds.push(ne);
+          end = true;
         }
       });
+    });
+    adds.forEach((e) => {
+      e.addChildTo(this.group);
     });
     this.enemys = this.enemys.filter((e) => {
       if (e.is_in || e.x < 0 || e.x > SCREEN_WIDTH || e.y < 0 || e.y > SCREEN_HEIGHT) {
