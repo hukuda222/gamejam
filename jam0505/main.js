@@ -38,7 +38,7 @@ phina.define("Title", {
     this.superInit();
     this.backgroundColor = "green";
     Label({
-      text: "礼をするゲーム\nWで起立、Sで礼。\n赤玉を左に青玉を右に送ろう\n\nEnter to start",
+      text: "礼をするゲーム\nAで起立、Dで礼。\n赤玉を左に青玉を右に送ろう\n\nEnter to start",
       fontSize: 40,
       fill: "white"
     }).addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(4));
@@ -86,7 +86,7 @@ phina.define("Main", {
     this.time = 0;
 
     Label({
-      text: "Wで起立 Sで礼 赤は左で 青は右",
+      text: "Aで起立 Dで礼 赤は左で 青は右",
       fontsize: 15,
       x: 250,
       y: 20,
@@ -168,12 +168,12 @@ phina.define("Main", {
 
     this.scorelabel.text = "" + this.score;
 
-    if (keyboard.getKey("w")) {
+    if (keyboard.getKey("a")) {
       this.rota = Math.min(this.rota + 10, 90);
       this.ueb.body.SetPosition(new phina.box2d.b2.Vec2((320 + (70 * Math.sin(Math.degToRad(this.rota)))) / 50, (250 + 70 - (70 * Math.cos(Math.degToRad(this.rota)))) / 50));
       this.ueb.body.SetAngle(Math.degToRad(this.rota));
     }
-    if (keyboard.getKey("s")) {
+    if (keyboard.getKey("d")) {
       this.rota = Math.max(this.rota - 10, -90);
       this.ueb.body.SetPosition(new phina.box2d.b2.Vec2((320 + (70 * Math.sin(Math.degToRad(this.rota)))) / 50, (250 + 70 - (70 * Math.cos(Math.degToRad(this.rota)))) / 50));
       this.ueb.body.SetAngle(Math.degToRad(this.rota));
