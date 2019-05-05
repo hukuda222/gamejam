@@ -168,12 +168,12 @@ phina.define("Main", {
 
     this.scorelabel.text = "" + this.score;
 
-    if (keyboard.getKey("a")) {
+    if (keyboard.getKey("d")) {
       this.rota = Math.min(this.rota + 10, 90);
       this.ueb.body.SetPosition(new phina.box2d.b2.Vec2((320 + (70 * Math.sin(Math.degToRad(this.rota)))) / 50, (250 + 70 - (70 * Math.cos(Math.degToRad(this.rota)))) / 50));
       this.ueb.body.SetAngle(Math.degToRad(this.rota));
     }
-    if (keyboard.getKey("d")) {
+    if (keyboard.getKey("a")) {
       this.rota = Math.max(this.rota - 10, -90);
       this.ueb.body.SetPosition(new phina.box2d.b2.Vec2((320 + (70 * Math.sin(Math.degToRad(this.rota)))) / 50, (250 + 70 - (70 * Math.cos(Math.degToRad(this.rota)))) / 50));
       this.ueb.body.SetAngle(Math.degToRad(this.rota));
