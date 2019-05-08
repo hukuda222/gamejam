@@ -137,10 +137,12 @@ phina.define("Main", {
       const mikan = Sprite("mikan1").addChildTo(this);
       mikan.setPosition(Math.random() * 600, 10);
       mikan.alpha = 1.0;
-      this.layer.createBody({
+      const mikanbody = this.layer.createBody({
         type: "dynamic",
         shape: "circle"
-      }).attachTo(mikan);
+      });
+      mikanbody.alpha = 0.0;
+      mikanbody.attachTo(mikan);
       this.mikan1l.push(mikan);
     } else if (Math.random() > 0.99) {
       const mikan2 = Sprite("mikan2").addChildTo(this);
