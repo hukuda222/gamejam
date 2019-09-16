@@ -79,7 +79,7 @@ phina.define("Result", {
       this.mes="実質人工知能";
     }
     this.scorelabel = Label({
-      text: "スコア:" + this.score + "\n\nあなたは、\n"+this.mes+"です！\n\nPress T to Tweet.",
+      text: "スコア:" + this.score + "\n\nあなたは、\n "+this.mes+"です！\n\nPress T to Tweet.",
       fontsize: 15,
       x: 250,
       y: 170,
@@ -219,7 +219,7 @@ phina.define("Main", {
       this.is_ready=true;
     }
     console.log(this.time);
-    if (this.time > 60*10) {
+    if (this.time > 60*8) {
       this.exit({correct: this.correct,num:this.num});
     }
   },
