@@ -2,23 +2,24 @@
 <html>
 
 <head>
-    <title>5000兆円稼ごう</title>
+  <title>5000兆円稼ごう</title>
 
-    <script type="text/javascript" src="game.js"></script>
+  <script type="text/javascript" src="game.js"></script>
 </head>
 
-<body onload="init()" bgcolor="#FFFFFF" text="#000000">
-    <canvas id="cv" width="800" height="600"></canvas>
-    <script>
-        "use strict";
-        const set = _=>{
-          setTimeout(_=>{
-                main();
-                set();
-           }, 1000 / 60);
-         };
-         set();
-    </script>
+<body bgcolor="#FFFFFF" text="#000000">
+  <canvas id="cv" width="800" height="600"></canvas>
+  <script>
+    "use strict";
+    init();
+    const set = _ => {
+      setTimeout(_ => {
+        main();
+        set();
+      }, 1000 / 60);
+    };
+    set();
+  </script>
 </body>
 
 </html>

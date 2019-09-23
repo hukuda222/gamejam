@@ -221,8 +221,8 @@ phina.define("Main", {
     if (this.stop) {
       let bunbo = 0;
       let bunsi = 0;
-      for (let x = 100; x <= 500; x++) {
-        for (let y = 60; y <= 460; y++) {
+      for (let x = 100; x <= 500; x += 0.1) {
+        for (let y = 60; y <= 460; y += 0.1) {
           if (Math.pow(x - 300, 2) + Math.pow(y - 260, 2) <= Math.pow(200, 2)) {
             bunbo++;
             if (is_in(this.part, x, y)) {
